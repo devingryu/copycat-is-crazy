@@ -94,7 +94,7 @@ GameObject:
   m_Component:
   - component: {fileID: 562161919637916785}
   - component: {fileID: 6279077227656438111}
-  - component: {fileID: 8016431751372577953}
+  - component: {fileID: 3717664264574731298}
   m_Layer: 7
   m_Name: pfFlask
   m_TagString: Untagged
@@ -163,7 +163,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &8016431751372577953
+--- !u!114 &3717664264574731298
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -172,6 +172,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 6266037594063095137}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95d737852afc49e40892254e1e4f93da, type: 3}
+  m_Script: {fileID: 11500000, guid: 65b4c21782416bf4fbcbe9d27d8b41ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  stat:
+    speed: 0
+    balloonRange: 1
+    balloonNumber: 0
+    turtle: 0
+    pirateTurtle: 0

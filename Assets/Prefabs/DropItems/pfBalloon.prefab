@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4260008100820056185}
   - component: {fileID: 8168178145381083787}
-  - component: {fileID: 5666874271764938514}
+  - component: {fileID: 8704391408037943287}
   m_Layer: 7
   m_Name: pfBalloon
   m_TagString: Untagged
@@ -69,7 +69,7 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.5
---- !u!114 &5666874271764938514
+--- !u!114 &8704391408037943287
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -78,9 +78,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 1372307182497434023}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f7221f669245d94bb41197b2c877f8d, type: 3}
+  m_Script: {fileID: 11500000, guid: 65b4c21782416bf4fbcbe9d27d8b41ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  stat:
+    speed: 0
+    balloonRange: 0
+    balloonNumber: 1
+    turtle: 0
+    pirateTurtle: 0
 --- !u!1 &6723601209270979472
 GameObject:
   m_ObjectHideFlags: 0

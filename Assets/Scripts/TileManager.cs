@@ -12,15 +12,21 @@ public class TileManager : MonoBehaviour
     public Balloon balloonPrefab;
 
     //===========================================================================
-
-    public Dictionary<Vector3Int, Cell> map;
+    Dictionary<Vector3Int, Cell> map;
     public static TileManager Instance { get; private set; }
 
     WaitForSeconds waveLiveTime = new WaitForSeconds(0.2f);
 
     private void Awake()
     {
-        Instance = this;
+        if(Instance == null)
+            Instance = this;
+        else
+        {
+            if (Instance != this)
+                Destroy(gameObject);
+        }
+
         map = new Dictionary<Vector3Int, Cell>();
         foreach(Vector3Int pos in floor.cellBounds.allPositionsWithin)
         {
@@ -28,8 +34,7 @@ public class TileManager : MonoBehaviour
                 continue;
 
             Vector3 worldPos = floor.CellToWorld(pos) + new Vector3(0.5f, 0.5f, 0);
-            Collider2D collider = Physics2D.OverlapPoint(worldPos);
-            map[pos] = new Cell { worldPos = worldPos, cellPos = pos ,objectOnCell = (collider != null), IsAttacked = false };
+            map[pos] = new Cell { worldPos = worldPos, cellPos = pos };
             map[pos].OnCellAttacked += TileManager_OnCellAttacked;
         }
     }
@@ -49,6 +54,16 @@ public class TileManager : MonoBehaviour
     public Cell WorldToCell(Vector3 position)
     {
         return map[floor.WorldToCell(position)];
+    }
+
+    public Cell CoordinateToCell(Vector3Int coordinate)
+    {
+        return map[coordinate];
+    }
+
+    public bool TryGetCell(Vector3Int position, out Cell cell)
+    {
+        return map.TryGetValue(position, out cell);
     }
     
 

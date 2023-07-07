@@ -2,26 +2,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum DropItemId { Flask, }
-
 public class ItemCache : MonoBehaviour
 {
     public static ItemCache Instance { get; private set; }
-    DropItemDataListSO dropItemList;
-    [HideInInspector] public UsableItemDataListSO usableItemList;
-
-
+    [SerializeField] List<DropItem> dropItemPrefabs;
 
     private void Awake()
     {
-        Instance = this;
-        dropItemList = Resources.Load<DropItemDataListSO>(typeof(DropItemDataListSO).Name);
-        usableItemList = Resources.Load<UsableItemDataListSO>(typeof(UsableItemDataListSO).Name);
+        if (Instance == null)
+            Instance = this;
+        else
+        {
+            if (Instance != this)
+                Destroy(gameObject);
+        }
     }
 
     public void SpawnRandomDropItem(Vector3 position)
     {
-        int randomIndex = Random.Range(0, dropItemList.list.Count);
-        Instantiate(dropItemList.list[randomIndex].prefab, position, Quaternion.identity);
+        int randomIndex = Random.Range(0, dropItemPrefabs.Count);
+        Instantiate(dropItemPrefabs[randomIndex], position, Quaternion.identity);
     }
 }

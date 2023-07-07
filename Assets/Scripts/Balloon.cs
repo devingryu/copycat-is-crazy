@@ -9,12 +9,10 @@ public class Balloon : MonoBehaviour
 {
     public event EventHandler OnBallonExplode;
     [SerializeField] float timerMax = 5f;
-
     [HideInInspector] public int range = 1;
     float timer;
     bool isBoomed = false;
     Vector3Int position;
-    LayerMask wallMask;
 
     private void Awake()
     {
@@ -23,10 +21,17 @@ public class Balloon : MonoBehaviour
 
     private void Start()
     {
-        wallMask = LayerMask.GetMask("Wall");
         position = TileManager.Instance.WorldToCoordinate(transform.position);
-        transform.position = TileManager.Instance.map[position].worldPos;
-        TileManager.Instance.map[position].objectOnCell = true;
+        Cell currentCell = TileManager.Instance.CoordinateToCell(position);
+        transform.position = currentCell.worldPos;
+        currentCell.cellObject = CellObject.Balloon;
+        currentCell.OnCellAttacked += Balloon_OnCellAttacked;
+    }
+
+    private void Balloon_OnCellAttacked(object sender, Cell.OnCellAttackedArgs e)
+    {
+        Explode();
+        TileManager.Instance.CoordinateToCell(position).OnCellAttacked -= Balloon_OnCellAttacked;
     }
 
     private void Update()
@@ -45,8 +50,8 @@ public class Balloon : MonoBehaviour
 
         isBoomed = true;
         OnBallonExplode?.Invoke(this, EventArgs.Empty);
-        TileManager.Instance.map[position].objectOnCell = false;
-        //Spawn Wave
+        TileManager.Instance.CoordinateToCell(position).cellObject = CellObject.Nothing;
+
         AttackValidCell();
         Destroy(gameObject);
     }
@@ -54,59 +59,42 @@ public class Balloon : MonoBehaviour
     private void AttackValidCell()
     {
         int up, down, left, right;
-
-        RaycastHit2D hitUp = Physics2D.Raycast(
-            (Vector2)transform.position + Vector2.up * 0.45f, Vector2.up, range, wallMask);
-        RaycastHit2D hitDown = Physics2D.Raycast(
-            (Vector2)transform.position + Vector2.down * 0.45f, Vector2.down, range, wallMask);
-        RaycastHit2D hitLeft = Physics2D.Raycast(
-            (Vector2)transform.position + Vector2.left * 0.45f, Vector2.left, range, wallMask);
-        RaycastHit2D hitRight = Physics2D.Raycast(
-            (Vector2)transform.position + Vector2.right * 0.45f, Vector2.right, range, wallMask);
-
-        if (hitUp.transform == null)
-            up = range;
-        else
-            up = (int)hitUp.distance;
-
-        if (hitDown.transform == null)
-            down = range;
-        else
-            down = (int)hitDown.distance;
-
-        if (hitLeft.transform == null)
-            left = range;
-        else
-            left = (int)hitLeft.distance;
-
-        if (hitRight.transform == null)
-            right = range;
-        else
-            right = (int)hitRight.distance;
-
-        for(int i = 0;i<=up;++i)
+        for (up = 0; up <= range; ++up)
         {
-            if(TileManager.Instance.map.TryGetValue(position + Vector3Int.up * i, out Cell cell))
-                cell.IsAttacked = true;
+            if (TileManager.Instance.TryGetCell(position + Vector3Int.up * up, out Cell upCell) && IsAttackable(upCell.cellObject))
+                upCell.Attack();
+            else
+                break;
         }
 
-        for (int i = 0; i <= down; ++i)
+        for (down = 1; down <= range; ++down)
         {
-            if (TileManager.Instance.map.TryGetValue(position + Vector3Int.down * i, out Cell cell))
-                cell.IsAttacked = true;
+            if (TileManager.Instance.TryGetCell(position + Vector3Int.down * down, out Cell downCell) && IsAttackable(downCell.cellObject))
+                downCell.Attack();
+            else
+                break;
         }
 
-        for (int i = 0; i <= left; ++i)
+        for (left = 1; left <= range; ++left)
         {
-            if (TileManager.Instance.map.TryGetValue(position + Vector3Int.left * i, out Cell cell))
-                cell.IsAttacked = true;
+            if (TileManager.Instance.TryGetCell(position + Vector3Int.left * left, out Cell leftCell) && IsAttackable(leftCell.cellObject))
+                    leftCell.Attack();
+            else
+                break;
         }
 
-        for (int i = 0; i <= right; ++i)
+        for (right = 1; right <= range; ++right)
         {
-            if (TileManager.Instance.map.TryGetValue(position + Vector3Int.right * i, out Cell cell))
-                cell.IsAttacked = true;
+            if (TileManager.Instance.TryGetCell(position + Vector3Int.right * right, out Cell rightCell)
+                && IsAttackable(rightCell.cellObject))
+                rightCell.Attack();
+            else
+                break;
         }
     }
 
+    private bool IsAttackable(CellObject obj)
+    {
+        return obj != CellObject.Wall;
+    }
 }

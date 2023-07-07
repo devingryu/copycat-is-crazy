@@ -6,6 +6,8 @@ using UnityEngine;
 
 public class Box : MonoBehaviour
 {
+    [SerializeField] float itemDropPercentage = 0.2f; //0 ~ 1 --> 0% ~ 100%
+
     bool isMoving = false;
     Vector3Int position;
     public Vector3Int Position
@@ -15,7 +17,7 @@ public class Box : MonoBehaviour
         {
             if(position != value)
             {
-                StartCoroutine(MoveRoutine(TileManager.Instance.map[value].worldPos));
+                StartCoroutine(MoveRoutine(TileManager.Instance.CoordinateToCell(value).worldPos));
                 position = value;
             }
         }
@@ -26,22 +28,32 @@ public class Box : MonoBehaviour
     {
         position = TileManager.Instance.WorldToCoordinate(transform.position);
         Cell standingCell = TileManager.Instance.WorldToCell(transform.position);
-        standingCell.objectOnCell = true;
+        standingCell.cellObject = CellObject.Box;
+        standingCell.OnCellAttacked += Box_OnCellAttacked;
     }
     public void Push(Vector3Int direction)
     {
         if (isMoving) return;
 
-        if(TileManager.Instance.map.TryGetValue(direction + Position, out Cell cell))
+        if(TileManager.Instance.TryGetCell(direction + Position, out Cell movingCell))
         {
-            if(!cell.objectOnCell)
+            if(movingCell.cellObject == CellObject.Nothing)
             {
-                TileManager.Instance.WorldToCell(Position).objectOnCell = false;
-                TileManager.Instance.map[Position + direction].objectOnCell = true;
+                Cell prevCell = TileManager.Instance.WorldToCell(Position);
+                prevCell.cellObject = CellObject.Nothing;
+                prevCell.OnCellAttacked -= Box_OnCellAttacked;
+
+                movingCell.OnCellAttacked += Box_OnCellAttacked;
+                movingCell.cellObject = CellObject.Box;
                 Position += direction;
                 isMoving = true;
             }
         }
+    }
+
+    private void Box_OnCellAttacked(object sender, Cell.OnCellAttackedArgs e)
+    {
+        Delete();
     }
 
     private IEnumerator MoveRoutine(Vector3 position)
@@ -59,7 +71,10 @@ public class Box : MonoBehaviour
     public void Delete()
     {
         Destroy(gameObject);
-        TileManager.Instance.map[position].objectOnCell = false;
-        ItemCache.Instance.SpawnRandomDropItem(transform.position);
+        Cell currentCell = TileManager.Instance.CoordinateToCell(position);
+        currentCell.cellObject = CellObject.Nothing;
+        currentCell.OnCellAttacked -= Box_OnCellAttacked;
+        if (Random.value < itemDropPercentage)
+            ItemCache.Instance.SpawnRandomDropItem(transform.position);
     }
 }

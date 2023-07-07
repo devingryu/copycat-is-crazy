@@ -81,6 +81,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa4f613d0d366944ca0d098b2d131acd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  itemDropPercentage: 1
 --- !u!1 &7058986353868166641
 GameObject:
   m_ObjectHideFlags: 0

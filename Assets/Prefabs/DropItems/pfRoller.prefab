@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3517214731850875085}
   - component: {fileID: 7217897685187095578}
-  - component: {fileID: 1683771667918955922}
+  - component: {fileID: 5084246712145223135}
   m_Layer: 7
   m_Name: pfRoller
   m_TagString: Untagged
@@ -79,7 +79,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &1683771667918955922
+--- !u!114 &5084246712145223135
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -88,9 +88,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 1651204377286863062}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a516918d2265b24da980600dba1d8d2, type: 3}
+  m_Script: {fileID: 11500000, guid: 65b4c21782416bf4fbcbe9d27d8b41ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  stat:
+    speed: 1
+    balloonRange: 0
+    balloonNumber: 0
+    turtle: 0
+    pirateTurtle: 0
 --- !u!1 &3590663533688645127
 GameObject:
   m_ObjectHideFlags: 0
