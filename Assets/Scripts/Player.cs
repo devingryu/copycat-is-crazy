@@ -22,9 +22,6 @@ public class Player : MonoBehaviour
     int balloonRange = 1;
     int balloonNumber = 0;
 
-    //테스트용
-    [SerializeField] GameObject testTrap;
-
     int Health
     {
         get { return healthAmount; }
@@ -34,6 +31,7 @@ public class Player : MonoBehaviour
             healthAmount = value;
             Debug.Log(gameObject.name + " 's health: " + healthAmount);
             IsTrapped = false;
+            playerAnim.SetBool("Trap", false);
 
             if(healthAmount <= 0)
             {
@@ -42,8 +40,9 @@ public class Player : MonoBehaviour
         }
     }
     
-    public enum State { Up, Down, Left, Right, Idle }
-    State playerState = State.Idle;
+    public enum State { Up, Down, Left, Right, }
+    State playerState = State.Down;
+    Animator playerAnim;
     Collider2D front;
     Collider2D self;
     Vector3Int coordinate;
@@ -74,10 +73,13 @@ public class Player : MonoBehaviour
         {
             if (IsShield) return;
             isTrapped = value;
-            testTrap.SetActive(isTrapped); //test
 
             if (isTrapped)
+            {
                 StartCoroutine(Trap());
+                playerAnim.SetBool("Trap", true);
+            }
+
         }
     }
 
@@ -88,8 +90,8 @@ public class Player : MonoBehaviour
 
     private void Awake()
     {
+        playerAnim = GetComponent<Animator>();
         statList = new List<Stat>();
-        testTrap.SetActive(false);
         self = GetComponent<Collider2D>();
         balloonNumber = balloonNumberMax;
         playerRb = GetComponent<Rigidbody2D>();
@@ -115,6 +117,7 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
+        bool isMoving = false;
         if(Input.GetKeyDown(placeBalloon))
         {
             PlaceBalloon();
@@ -126,24 +129,28 @@ public class Player : MonoBehaviour
         {
             playerState = State.Up;
             direction = Vector2.up;
+            isMoving = true;
         }
 
         if (Input.GetKey(down))
         {
             playerState = State.Down;
             direction = Vector2.down;
+            isMoving = true;
         }
 
         if (Input.GetKey(left))
         {
             playerState = State.Left;
             direction = Vector2.left;
+            isMoving = true;
         }
 
         if (Input.GetKey(right))
         {
             playerState = State.Right;
             direction = Vector2.right;
+            isMoving = true;
         }
 
         Vector3Int nextPos = TileManager.Instance.WorldToCoordinate(transform.position);
@@ -154,8 +161,14 @@ public class Player : MonoBehaviour
             coordinate = nextPos;
         }
 
-        playerRb.velocity = direction * speed;
+        playerAnim.SetBool("isMoving", isMoving);
+        if(isMoving)
+        {
+            playerAnim.SetFloat("dirX", direction.x);
+            playerAnim.SetFloat("dirY", direction.y);
+        }
 
+        playerRb.velocity = direction * speed;
         FrontCheck(direction * 0.55f);
     }
 
