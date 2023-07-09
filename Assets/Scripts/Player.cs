@@ -5,23 +5,20 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     [SerializeField] LayerMask mask; //player can detect this mask
+    List<UsableItem> usableItemInventory; //usable item contains usable item amount
 
-    //스탯 업그레이드 한계
+
     const int speedMaxUpgrade = 10;
     const int balloonNumberMaxUpgrade = 5;
     const int balloonRangeMaxUpgrade = 5;
-
-
     int healthAmount = 3;
-
-
     List<Stat> statList;
-    // stat upgrade targets
+
+
     int balloonNumberMax = 3;
     float speed = 3;
     int balloonRange = 1;
     int balloonNumber = 0;
-
     int Health
     {
         get { return healthAmount; }
@@ -31,7 +28,6 @@ public class Player : MonoBehaviour
             healthAmount = value;
             Debug.Log(gameObject.name + " 's health: " + healthAmount);
             IsTrapped = false;
-            playerAnim.SetBool("Trap", false);
 
             if(healthAmount <= 0)
             {
@@ -41,6 +37,8 @@ public class Player : MonoBehaviour
     }
     
     public enum State { Up, Down, Left, Right, }
+    public enum Turtle { None, Normal, Pirate}
+    Turtle turtle = Turtle.None;
     State playerState = State.Down;
     Animator playerAnim;
     Collider2D front;
@@ -51,35 +49,52 @@ public class Player : MonoBehaviour
     bool isTrapped = false;
     bool isShield = false;
 
-    bool IsShield
+    public bool IsShield
     {
         get { return isShield; }
         set
         {
-            if (isShield != value)
+            if(value)
             {
-                isShield = value;
+                isShield = true;
+                Instantiate(ItemCache.Instance.shieldTimerPrefab, transform);
+            }
+            else
+            {
+                isShield = false;
             }
         }
     }
-
-
-
 
     public bool IsTrapped
     {
         get { return isTrapped; }
         set
         {
-            if (IsShield) return;
-            isTrapped = value;
-
-            if (isTrapped)
+            if(value)
             {
-                StartCoroutine(Trap());
-                playerAnim.SetBool("Trap", true);
-            }
+                if (IsShield)
+                {
+                    Debug.Log(gameObject.name + " blocked attack by shield!");
+                    return;
+                }
 
+                if (turtle != Turtle.None)
+                {
+                    Debug.Log("Turtle lost");
+                    TurtleLose();
+                    RefreshStat();
+                    return;
+                }
+                isTrapped = true;
+                playerAnim.SetBool("Trap", true);
+                StartCoroutine(TrapTimer());
+            }
+            else
+            {
+                isTrapped = false;
+                playerAnim.SetBool("Trap", false);
+            }
         }
     }
 
@@ -90,6 +105,7 @@ public class Player : MonoBehaviour
 
     private void Awake()
     {
+        ItemInventoryInit();
         playerAnim = GetComponent<Animator>();
         statList = new List<Stat>();
         self = GetComponent<Collider2D>();
@@ -117,13 +133,16 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
+        Vector2 direction = Vector2.zero;
         bool isMoving = false;
         if(Input.GetKeyDown(placeBalloon))
-        {
             PlaceBalloon();
-        }
-
-        Vector2 direction = Vector2.zero;
+        if (Input.GetKeyDown(item1))
+            usableItemInventory[0].Use(this);
+        if (Input.GetKeyDown(item2))
+            usableItemInventory[1].Use(this);
+        if (Input.GetKeyDown(item3))
+            usableItemInventory[2].Use(this);
 
         if (Input.GetKey(up))
         {
@@ -131,21 +150,18 @@ public class Player : MonoBehaviour
             direction = Vector2.up;
             isMoving = true;
         }
-
         if (Input.GetKey(down))
         {
             playerState = State.Down;
             direction = Vector2.down;
             isMoving = true;
         }
-
         if (Input.GetKey(left))
         {
             playerState = State.Left;
             direction = Vector2.left;
             isMoving = true;
         }
-
         if (Input.GetKey(right))
         {
             playerState = State.Right;
@@ -175,6 +191,8 @@ public class Player : MonoBehaviour
     private void Player_OnCellAttacked(object sender, Cell.OnCellAttackedArgs e)
     {
         IsTrapped = true;
+        if(IsShield)
+            transform.GetComponentInChildren<ShieldTimer>().timer -= 1;
     }
 
     private void OnBallonExplode(object sender, System.EventArgs e)
@@ -237,7 +255,7 @@ public class Player : MonoBehaviour
         // has balloon and there doesn't exist any cellObject
         if (balloonNumber > 0 && TileManager.Instance.CoordinateToCell(coordinate).cellObject == CellObject.Nothing)
         {
-            Balloon balloon = Instantiate(TileManager.Instance.balloonPrefab, transform.position, Quaternion.identity);
+            Balloon balloon = Instantiate(ItemCache.Instance.balloonPrefab, transform.position, Quaternion.identity);
             balloon.OnBallonExplode += OnBallonExplode;
             balloon.range = balloonRange;
             --balloonNumber;
@@ -245,10 +263,10 @@ public class Player : MonoBehaviour
     }
 
 
-    IEnumerator Trap()
+    IEnumerator TrapTimer()
     {
         float timer = 5f;
-        speed = 0.5f;
+        speed = 0.1f;
 
         while(IsTrapped)
         {
@@ -260,9 +278,10 @@ public class Player : MonoBehaviour
             }
             yield return null;
         }
-
+        Debug.Log("Trap exit");
         RefreshStat();
     }
+
 
     void RefreshStat()
     {
@@ -283,9 +302,17 @@ public class Player : MonoBehaviour
         }
 
         if (turtle)
+        {
             speed *= 0.5f;
+            this.turtle = Turtle.Normal;
+        }
+
         if (pirateTurtle)
+        {
             speed = speedMaxUpgrade;
+            this.turtle = Turtle.Pirate;
+        }
+
     }
 
     void InitStat()
@@ -294,5 +321,43 @@ public class Player : MonoBehaviour
         balloonNumberMax = 3;
         balloonRange = 1;
         balloonNumber = 3;
+        turtle = Turtle.None;
+    }
+
+    void TurtleLose()
+    {
+        for(int i = statList.Count - 1;i >= 0;--i)
+        {
+            if (statList[i].turtle)
+                statList.RemoveAt(i);
+        }
+    }
+
+    public void UpgradeTurtle()
+    {
+        if (HasTurtle())
+        {
+            TurtleLose();
+
+            Debug.Log("Upgraded Your Turtle");
+            statList.Add(new Stat { turtle = true, pirateTurtle = true , 
+                balloonNumber = 0, balloonRange = 0, speed = 0});
+            RefreshStat();
+        }
+    }
+
+    public bool HasTurtle()
+    {
+        return turtle != Turtle.None;
+    }
+
+    void ItemInventoryInit()
+    {
+        Needle needle = new Needle();
+        Shield shield = new Shield();
+        Can can = new Can();
+        usableItemInventory = new List<UsableItem> { needle, shield, can };
+        //set init amount
+        needle.SetAmount(2); shield.SetAmount(2); can.SetAmount(2);
     }
 }

@@ -9,8 +9,6 @@ public class TileManager : MonoBehaviour
     [SerializeField] Tilemap waveMap;
     [SerializeField] TileBase waveTile;
 
-    public Balloon balloonPrefab;
-
     //===========================================================================
     Dictionary<Vector3Int, Cell> map;
     public static TileManager Instance { get; private set; }

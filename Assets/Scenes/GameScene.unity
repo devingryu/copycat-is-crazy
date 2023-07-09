@@ -134,7 +134,7 @@ GameObject:
   - component: {fileID: 2600470}
   - component: {fileID: 2600469}
   m_Layer: 2
-  m_Name: DropItem Manager
+  m_Name: Item Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -153,11 +153,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dropItemPrefabs:
-  - {fileID: 8704391408037943287, guid: 6f04fe35d767345409b3bee8e64b7b5d, type: 3}
-  - {fileID: 3717664264574731298, guid: b4df6bdee39923144bf76622910c1d86, type: 3}
   - {fileID: 7530314307956632595, guid: 11a8234e1cfed6342bbc5ade1b8e07c9, type: 3}
   - {fileID: 3105038046855906158, guid: 119db292decef8d4883f3c20acbe5f8e, type: 3}
+  - {fileID: 8704391408037943287, guid: 6f04fe35d767345409b3bee8e64b7b5d, type: 3}
+  - {fileID: 3717664264574731298, guid: b4df6bdee39923144bf76622910c1d86, type: 3}
   - {fileID: 5084246712145223135, guid: c7c69ae2852709a45abaa1df6221c657, type: 3}
+  shieldTimerPrefab: {fileID: 903035829980912005, guid: 7d542a9301f94d14795a3189c6ed98d0, type: 3}
+  balloonPrefab: {fileID: 5773630731183711922, guid: c585ffdb4ee258a4aa8154082f514ff7, type: 3}
 --- !u!4 &2600470
 Transform:
   m_ObjectHideFlags: 0
@@ -1181,7 +1183,7 @@ GameObject:
   - component: {fileID: 305765945}
   - component: {fileID: 305765946}
   m_Layer: 6
-  m_Name: Wall Tilemap
+  m_Name: Boundary Tilemap
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3477,7 +3479,6 @@ MonoBehaviour:
   floor: {fileID: 36917062}
   waveMap: {fileID: 498791095}
   waveTile: {fileID: 11400000, guid: 9bfa087766c3d874baa100a26e8ad446, type: 2}
-  balloonPrefab: {fileID: 5773630731183711922, guid: c585ffdb4ee258a4aa8154082f514ff7, type: 3}
 --- !u!4 &1717508113 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1516678967985535495, guid: 5a9e73c9e3133fd429bdabe13eca3d7d, type: 3}
