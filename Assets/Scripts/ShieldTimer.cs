@@ -4,12 +4,15 @@ using UnityEngine;
 
 public class ShieldTimer : MonoBehaviour
 {
-    public float timer = 5;
+    const float shieldTime = 5;
+    public float timer;
     Player player;
 
-    private void Start()
+    private void Awake()
     {
+        timer = shieldTime;
         player = GetComponentInParent<Player>();
+        gameObject.SetActive(false);
     }
 
     private void Update()
@@ -18,7 +21,12 @@ public class ShieldTimer : MonoBehaviour
         if(timer < 0)
         {
             player.IsShield = false;
-            Destroy(gameObject);
+            gameObject.SetActive(false);
         }
+    }
+
+    private void OnEnable()
+    {
+        timer = shieldTime;
     }
 }

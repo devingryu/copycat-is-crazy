@@ -11,7 +11,7 @@ public class DropItem : MonoBehaviour
     private void Awake()
     {
         currentCell = TileManager.Instance.WorldToCell(transform.position);
-        currentCell.cellObject = CellObject.DropItem;
+        currentCell.cellObject = CellObject.Breakable;
         currentCell.OnCellAttacked += DropItem_OnCellAttacked;
     }
 

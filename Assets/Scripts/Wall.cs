@@ -4,8 +4,31 @@ using UnityEngine;
 
 public class Wall : MonoBehaviour
 {
-    void Start()
+    [SerializeField] bool isBreakable;
+    Cell standingCell;
+    private void Start()
     {
-        TileManager.Instance.WorldToCell(transform.position).cellObject = CellObject.Wall;
+        if(isBreakable)
+        {
+            standingCell = TileManager.Instance.WorldToCell(transform.position);
+            standingCell.cellObject = CellObject.Breakable;
+            standingCell.OnCellAttacked += BreakableWall_OnCellAttacked;
+        }
+        else
+        {
+            TileManager.Instance.WorldToCell(transform.position).cellObject = CellObject.UnBreakable;
+        }
+    }
+
+    private void BreakableWall_OnCellAttacked(object sender, Cell.OnCellAttackedArgs e)
+    {
+        Delete();
+    }
+
+    private void Delete()
+    {
+        Destroy(gameObject);
+        standingCell.OnCellAttacked -= BreakableWall_OnCellAttacked;
+        standingCell.cellObject = CellObject.Nothing;
     }
 }

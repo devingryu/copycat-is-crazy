@@ -4,11 +4,12 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    [SerializeField] Transform shieldTimer;
     [SerializeField] LayerMask mask; //player can detect this mask
     List<UsableItem> usableItemInventory; //usable item contains usable item amount
 
 
-    const int speedMaxUpgrade = 10;
+    const int speedMaxUpgrade = 8;
     const int balloonNumberMaxUpgrade = 5;
     const int balloonRangeMaxUpgrade = 5;
     int healthAmount = 3;
@@ -32,6 +33,8 @@ public class Player : MonoBehaviour
             if(healthAmount <= 0)
             {
                 //die
+                GameManager.Instance.SetWinner(isFirstPlayer);
+                GameManager.Instance.EndGame();
             }
         }
     }
@@ -43,6 +46,7 @@ public class Player : MonoBehaviour
     Animator playerAnim;
     Collider2D front;
     Collider2D self;
+    SpriteRenderer playerRenderer;
     Vector3Int coordinate;
 
     [SerializeField] bool isFirstPlayer;
@@ -57,7 +61,7 @@ public class Player : MonoBehaviour
             if(value)
             {
                 isShield = true;
-                Instantiate(ItemCache.Instance.shieldTimerPrefab, transform);
+                shieldTimer.gameObject.SetActive(true);
             }
             else
             {
@@ -108,6 +112,7 @@ public class Player : MonoBehaviour
         ItemInventoryInit();
         playerAnim = GetComponent<Animator>();
         statList = new List<Stat>();
+        playerRenderer = GetComponent<SpriteRenderer>();
         self = GetComponent<Collider2D>();
         balloonNumber = balloonNumberMax;
         playerRb = GetComponent<Rigidbody2D>();
@@ -172,6 +177,7 @@ public class Player : MonoBehaviour
         Vector3Int nextPos = TileManager.Instance.WorldToCoordinate(transform.position);
         if (coordinate != nextPos)
         {
+            playerRenderer.enabled = TileManager.Instance.WorldToCell(nextPos).cellObject != CellObject.Bush;
             TileManager.Instance.WorldToCell(nextPos).OnCellAttacked += Player_OnCellAttacked;
             TileManager.Instance.WorldToCell(coordinate).OnCellAttacked -= Player_OnCellAttacked;
             coordinate = nextPos;
@@ -185,7 +191,7 @@ public class Player : MonoBehaviour
         }
 
         playerRb.velocity = direction * speed;
-        FrontCheck(direction * 0.55f);
+        FrontCheck(direction * 0.51f);
     }
 
     private void Player_OnCellAttacked(object sender, Cell.OnCellAttackedArgs e)
@@ -252,13 +258,17 @@ public class Player : MonoBehaviour
 
     private void PlaceBalloon()
     {
-        // has balloon and there doesn't exist any cellObject
-        if (balloonNumber > 0 && TileManager.Instance.CoordinateToCell(coordinate).cellObject == CellObject.Nothing)
+        // has balloon and there doesn't exist any cellObject (except bush)
+        if (balloonNumber > 0)
         {
-            Balloon balloon = Instantiate(ItemCache.Instance.balloonPrefab, transform.position, Quaternion.identity);
-            balloon.OnBallonExplode += OnBallonExplode;
-            balloon.range = balloonRange;
-            --balloonNumber;
+            CellObject cellobj = TileManager.Instance.CoordinateToCell(coordinate).cellObject;
+            if(cellobj == CellObject.Nothing || cellobj == CellObject.Bush)
+            {
+                Balloon balloon = Instantiate(ItemCache.Instance.balloonPrefab, transform.position, Quaternion.identity);
+                balloon.OnBallonExplode += OnBallonExplode;
+                balloon.range = balloonRange;
+                --balloonNumber;
+            }
         }
     }
 
@@ -278,7 +288,6 @@ public class Player : MonoBehaviour
             }
             yield return null;
         }
-        Debug.Log("Trap exit");
         RefreshStat();
     }
 

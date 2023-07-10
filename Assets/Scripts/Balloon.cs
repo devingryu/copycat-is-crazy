@@ -13,10 +13,12 @@ public class Balloon : MonoBehaviour
     float timer;
     bool isBoomed = false;
     Vector3Int position;
+    SpriteRenderer spriteRenderer;
 
     private void Awake()
     {
         timer = timerMax;
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
     }
 
     private void Start()
@@ -24,12 +26,22 @@ public class Balloon : MonoBehaviour
         position = TileManager.Instance.WorldToCoordinate(transform.position);
         Cell currentCell = TileManager.Instance.CoordinateToCell(position);
         transform.position = currentCell.worldPos;
-        currentCell.cellObject = CellObject.Balloon;
+
+        if(currentCell.cellObject == CellObject.Bush)
+        {
+            spriteRenderer.enabled = false;
+        }
+        else
+        {
+            currentCell.cellObject = CellObject.Breakable;
+        }
+
         currentCell.OnCellAttacked += Balloon_OnCellAttacked;
     }
 
     private void Balloon_OnCellAttacked(object sender, Cell.OnCellAttackedArgs e)
     {
+        spriteRenderer.enabled = true;
         Explode();
         TileManager.Instance.CoordinateToCell(position).OnCellAttacked -= Balloon_OnCellAttacked;
     }
@@ -95,6 +107,6 @@ public class Balloon : MonoBehaviour
 
     private bool IsAttackable(CellObject obj)
     {
-        return obj != CellObject.Wall;
+        return obj != CellObject.UnBreakable;
     }
 }

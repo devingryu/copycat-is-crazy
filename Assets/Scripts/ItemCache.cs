@@ -6,7 +6,6 @@ public class ItemCache : MonoBehaviour
 {
     public static ItemCache Instance { get; private set; }
     [SerializeField] List<DropItem> dropItemPrefabs;
-    public ShieldTimer shieldTimerPrefab;
     public Balloon balloonPrefab;
 
     private void Awake()

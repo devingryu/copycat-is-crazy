@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-public enum CellObject { Nothing, Box, Balloon, Wall, DropItem, }
+public enum CellObject { Nothing, Breakable, UnBreakable, Bush}
 public class Cell
 {
     public event EventHandler<OnCellAttackedArgs> OnCellAttacked;

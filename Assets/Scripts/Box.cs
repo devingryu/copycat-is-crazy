@@ -28,7 +28,7 @@ public class Box : MonoBehaviour
     {
         position = TileManager.Instance.WorldToCoordinate(transform.position);
         Cell standingCell = TileManager.Instance.WorldToCell(transform.position);
-        standingCell.cellObject = CellObject.Box;
+        standingCell.cellObject = CellObject.Breakable;
         standingCell.OnCellAttacked += Box_OnCellAttacked;
     }
     public void Push(Vector3Int direction)
@@ -44,7 +44,7 @@ public class Box : MonoBehaviour
                 prevCell.OnCellAttacked -= Box_OnCellAttacked;
 
                 movingCell.OnCellAttacked += Box_OnCellAttacked;
-                movingCell.cellObject = CellObject.Box;
+                movingCell.cellObject = CellObject.Breakable;
                 Position += direction;
                 isMoving = true;
             }
