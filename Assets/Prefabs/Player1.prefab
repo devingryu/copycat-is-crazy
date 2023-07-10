@@ -120,7 +120,7 @@ Transform:
   - {fileID: 288153802836354701}
   - {fileID: 4647772253570121229}
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!58 &7190153606172179572
 CircleCollider2D:
@@ -196,7 +196,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8cb8e24fe29d384458afcf707ce06258, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shieldTimer: {fileID: 288153802836354701}
+  shieldTimer: {fileID: 7206084196706814913}
+  displayer: {fileID: 6235858337025476762}
   mask:
     serializedVersion: 2
     m_Bits: 137
@@ -342,5 +343,10 @@ PrefabInstance:
 --- !u!4 &288153802836354701 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3866715119782089292, guid: 7d542a9301f94d14795a3189c6ed98d0, type: 3}
+  m_PrefabInstance: {fileID: 3915579371238421697}
+  m_PrefabAsset: {fileID: 0}
+--- !u!212 &7206084196706814913 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 5933432950594436864, guid: 7d542a9301f94d14795a3189c6ed98d0, type: 3}
   m_PrefabInstance: {fileID: 3915579371238421697}
   m_PrefabAsset: {fileID: 0}

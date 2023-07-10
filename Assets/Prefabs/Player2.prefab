@@ -33,10 +33,10 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1564336764497280335}
+  - {fileID: 2952588583696224051}
   - {fileID: 1707246572375558809}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!58 &9213073407711607429
 CircleCollider2D:
@@ -112,7 +112,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8cb8e24fe29d384458afcf707ce06258, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shieldTimer: {fileID: 1564336764497280335}
+  shieldTimer: {fileID: 5694571461653521023}
+  displayer: {fileID: 8803209806320456340}
   mask:
     serializedVersion: 2
     m_Bits: 137
@@ -339,8 +340,13 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7d542a9301f94d14795a3189c6ed98d0, type: 3}
---- !u!4 &1564336764497280335 stripped
+--- !u!4 &2952588583696224051 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3866715119782089292, guid: 7d542a9301f94d14795a3189c6ed98d0, type: 3}
+  m_PrefabInstance: {fileID: 2112442514297855359}
+  m_PrefabAsset: {fileID: 0}
+--- !u!212 &5694571461653521023 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 5933432950594436864, guid: 7d542a9301f94d14795a3189c6ed98d0, type: 3}
   m_PrefabInstance: {fileID: 2112442514297855359}
   m_PrefabAsset: {fileID: 0}

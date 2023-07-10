@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    [SerializeField] Transform shieldTimer;
+    [SerializeField] SpriteRenderer shieldTimer;
+    [SerializeField] GameObject displayer;
     [SerializeField] LayerMask mask; //player can detect this mask
     List<UsableItem> usableItemInventory; //usable item contains usable item amount
 
@@ -177,7 +178,10 @@ public class Player : MonoBehaviour
         Vector3Int nextPos = TileManager.Instance.WorldToCoordinate(transform.position);
         if (coordinate != nextPos)
         {
-            playerRenderer.enabled = TileManager.Instance.WorldToCell(nextPos).cellObject != CellObject.Bush;
+            bool notInBush = TileManager.Instance.WorldToCell(nextPos).cellObject != CellObject.Bush;
+            playerRenderer.enabled = notInBush;
+            displayer.SetActive(notInBush);
+            shieldTimer.enabled = notInBush;
             TileManager.Instance.WorldToCell(nextPos).OnCellAttacked += Player_OnCellAttacked;
             TileManager.Instance.WorldToCell(coordinate).OnCellAttacked -= Player_OnCellAttacked;
             coordinate = nextPos;
