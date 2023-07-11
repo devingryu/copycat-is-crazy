@@ -10,7 +10,7 @@ public class Player : MonoBehaviour
     [SerializeField] Animator vehicle;
     [SerializeField] LayerMask mask; //player can detect this mask
     List<UsableItem> usableItemInventory; //usable item contains usable item amount
-
+    Vector3 originPos;
 
     const int speedMaxUpgrade = 7;
     const int balloonNumberMaxUpgrade = 5;
@@ -19,24 +19,33 @@ public class Player : MonoBehaviour
     List<Stat> statList;
 
     public event EventHandler<OnItemUseEventArgs> OnItemUse;
+    public event EventHandler OnDamage;
 
     public class OnItemUseEventArgs : EventArgs
     {
         public UsableItem itemType;
     }
 
-    int balloonNumberMax = 3;
-    float speed = 3;
+    int balloonNumberMax = 1;
+    float speed = 3.5f;
     int balloonRange = 1;
     int balloonNumber = 0;
-    int Health
+    public int Health
     {
         get { return healthAmount; }
 
         set
         {
+            if(healthAmount > value)
+            {
+                GameManager.Instance.PlaySound(GameManager.SFXName.Damaged);
+                transform.position = originPos;
+                isShield = true;
+                StartCoroutine(GracePeriod()); // Turn transparent shield off after 0.5s
+            }
+
             healthAmount = value;
-            Debug.Log(gameObject.name + " 's health: " + healthAmount);
+            OnDamage?.Invoke(this, EventArgs.Empty);
             IsTrapped = false;
 
             if(healthAmount <= 0)
@@ -87,14 +96,10 @@ public class Player : MonoBehaviour
             if(value)
             {
                 if (IsShield)
-                {
-                    Debug.Log(gameObject.name + " blocked attack by shield!");
                     return;
-                }
 
                 if (turtle != Turtle.None)
                 {
-                    Debug.Log("Turtle lost");
                     TurtleLose();
                     RefreshStat();
                     return;
@@ -118,7 +123,7 @@ public class Player : MonoBehaviour
 
     private void Awake()
     {
-        
+        originPos = transform.position;
         playerAnim = GetComponent<Animator>();
         statList = new List<Stat>();
         playerRenderer = GetComponent<SpriteRenderer>();
@@ -171,18 +176,23 @@ public class Player : MonoBehaviour
         Vector3Int nextPos = TileManager.Instance.WorldToCoordinate(transform.position);
         if (coordinate != nextPos)
         {
-            bool notInBush = TileManager.Instance.WorldToCell(nextPos).cellObject != CellObject.Bush;
-            playerRenderer.enabled = notInBush;
-            displayer.SetActive(notInBush);
-            shieldTimer.enabled = notInBush;
-            vehicle.GetComponent<SpriteRenderer>().enabled = notInBush;
-
-            TileManager.Instance.WorldToCell(nextPos).OnCellAttacked += Player_OnCellAttacked;
-            TileManager.Instance.WorldToCell(coordinate).OnCellAttacked -= Player_OnCellAttacked;
+            BushCheck(nextPos);
+            TileManager.Instance.CoordinateToCell(nextPos).OnCellAttacked += Player_OnCellAttacked;
+            TileManager.Instance.CoordinateToCell(coordinate).OnCellAttacked -= Player_OnCellAttacked;
             coordinate = nextPos;
         }
 
-        FrontCheck(direction * 0.51f);
+        FrontCheck(direction);
+    }
+
+
+    private void BushCheck(Vector3Int nextPos)
+    {
+        bool notInBush = TileManager.Instance.WorldToCell(nextPos).cellObject != CellObject.Bush;
+        playerRenderer.enabled = notInBush;
+        displayer.SetActive(notInBush);
+        shieldTimer.enabled = notInBush;
+        vehicle.GetComponent<SpriteRenderer>().enabled = notInBush;
     }
 
     private void Move(out Vector2 direction)
@@ -235,8 +245,10 @@ public class Player : MonoBehaviour
     private void Player_OnCellAttacked(object sender, Cell.OnCellAttackedArgs e)
     {
         IsTrapped = true;
-        if(IsShield)
+        if (IsShield)
             transform.GetComponentInChildren<ShieldTimer>().timer -= 1;
+
+        BushCheck(TileManager.Instance.WorldToCoordinate(transform.position));
     }
 
     private void OnBallonExplode(object sender, System.EventArgs e)
@@ -247,51 +259,57 @@ public class Player : MonoBehaviour
 
     private void FrontCheck(Vector2 direction)
     {
-        self.enabled = false;
-        front = Physics2D.OverlapPoint((Vector2)transform.position + direction, mask);
-        self.enabled = true;
-
-        if (front == null)
-            return;
-
-
-        if(front.TryGetComponent<Box>(out Box box))
+        if (TileManager.Instance.TryGetCell(transform.position + (Vector3)direction * 0.55f, out Cell frontCell))
         {
-            switch (playerState)
+            if(frontCell.cellObject == CellObject.Balloon &&
+                TileManager.Instance.WorldToCell(transform.position).cellObject != CellObject.Balloon)
             {
-                case State.Up:
-                    box.Push(Vector3Int.up);
-                    break;
-                case State.Down:
-                    box.Push(Vector3Int.down);
-                    break;
-                case State.Left:
-                    box.Push(Vector3Int.left);
-                    break;
-                case State.Right:
-                    box.Push(Vector3Int.right);
-                    break;
+                playerRb.velocity = Vector2.zero;
+                Debug.Log("cannot move");
+            }
+
+            self.enabled = false;
+            front = Physics2D.OverlapPoint((Vector2)transform.position + direction * 0.52f, mask);
+            self.enabled = true;
+
+            if (front == null)
+                return;
+
+            if (front.TryGetComponent<Box>(out Box box))
+            {
+                if (isTrapped) return;
+                switch (playerState)
+                {
+                    case State.Up:
+                        box.Push(Vector3Int.up);
+                        break;
+                    case State.Down:
+                        box.Push(Vector3Int.down);
+                        break;
+                    case State.Left:
+                        box.Push(Vector3Int.left);
+                        break;
+                    case State.Right:
+                        box.Push(Vector3Int.right);
+                        break;
+                }
+            }
+            else if (front.TryGetComponent<DropItem>(out DropItem dropItem))
+            {
+                if (isTrapped) return;
+                GameManager.Instance.PlaySound(GameManager.SFXName.CollectItem);
+                statList.Add(dropItem.stat);
+                dropItem.Delete();
+                RefreshStat();
+            }
+            else if (front.TryGetComponent<Player>(out Player otherPlayer))
+            {
+                if (isTrapped) return;
+
+                if (otherPlayer.IsTrapped)
+                    otherPlayer.Health--;
             }
         }
-        else if(front.TryGetComponent<Balloon>(out Balloon balloon))
-        {
-            playerRb.velocity = Vector2.zero;
-        }
-        else if(front.TryGetComponent<DropItem>(out DropItem dropItem))
-        {
-            statList.Add(dropItem.stat);
-            dropItem.Delete();
-            RefreshStat();
-        }
-        else if(front.TryGetComponent<Player>(out Player otherPlayer))
-        {
-            if(otherPlayer.IsTrapped)
-                otherPlayer.Health--;
-
-            if (IsTrapped)
-                Health--;
-        }
-
     }
 
     private void PlaceBalloon()
@@ -306,6 +324,7 @@ public class Player : MonoBehaviour
                 balloon.OnBallonExplode += OnBallonExplode;
                 balloon.range = balloonRange;
                 --balloonNumber;
+                GameManager.Instance.PlaySound(GameManager.SFXName.PlaceBalloon);
             }
         }
     }
@@ -356,6 +375,7 @@ public class Player : MonoBehaviour
             speed *= 0.5f;
             this.turtle = Turtle.Normal;
             playerAnim.SetBool("isRiding", true);
+            GameManager.Instance.PlaySound(GameManager.SFXName.RideSomething);
             vehicle.runtimeAnimatorController = ItemCache.Instance.GetVehicleController(VehicleName.Turtle); 
         }
 
@@ -364,6 +384,7 @@ public class Player : MonoBehaviour
             speed = speedMaxUpgrade;
             this.turtle = Turtle.Pirate;
             playerAnim.SetBool("isRiding", true);
+            GameManager.Instance.PlaySound(GameManager.SFXName.RideSomething);
             vehicle.runtimeAnimatorController = ItemCache.Instance.GetVehicleController(VehicleName.Pirate);
         }
 
@@ -387,7 +408,7 @@ public class Player : MonoBehaviour
         }
 
         playerAnim.SetBool("isRiding", false);
-        vehicle.gameObject.SetActive(false);
+        vehicle.runtimeAnimatorController = null;
     }
 
     public void UpgradeTurtle()
@@ -395,8 +416,6 @@ public class Player : MonoBehaviour
         if (HasTurtle())
         {
             TurtleLose();
-
-            Debug.Log("Upgraded Your Turtle");
             statList.Add(new Stat { turtle = true, pirateTurtle = true , 
                 balloonNumber = 0, balloonRange = 0, speed = 0});
             RefreshStat();
@@ -415,11 +434,27 @@ public class Player : MonoBehaviour
         Can can = new Can();
         usableItemInventory = new List<UsableItem> { needle, shield, can };
         //set init amount
-        needle.SetAmount(2);
+        needle.SetAmount(1);
         OnItemUse?.Invoke(this, new OnItemUseEventArgs { itemType = needle });
         shield.SetAmount(2);
         OnItemUse?.Invoke(this, new OnItemUseEventArgs { itemType = shield });
-        can.SetAmount(2);
+        can.SetAmount(1);
         OnItemUse?.Invoke(this, new OnItemUseEventArgs { itemType = can });
+    }
+
+    IEnumerator GracePeriod()
+    {
+        float timer = 2;
+        WaitForSeconds blinkTime = new WaitForSeconds(0.2f);
+        while(timer >= 0)
+        {
+            Debug.Log(timer);
+            timer -= 0.4f;
+            playerRenderer.color = Color.clear;
+            yield return blinkTime;
+            playerRenderer.color = Color.white;
+            yield return blinkTime;
+        }
+        isShield = false;
     }
 }

@@ -63,6 +63,11 @@ public class TileManager : MonoBehaviour
     {
         return map.TryGetValue(position, out cell);
     }
+
+    public bool TryGetCell(Vector3 position, out Cell cell)
+    {
+        return map.TryGetValue(floor.WorldToCell(position), out cell);
+    }
     
 
     IEnumerator WaitWaveLiveTime(Vector3Int position)

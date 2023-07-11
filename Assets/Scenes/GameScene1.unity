@@ -162,9 +162,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: d5a61f8f264e74e418e5939d0e1e053e, type: 2}
   - {fileID: 11400000, guid: b8e2bc20a8dde2b468877648cbb8b01b, type: 2}
   - {fileID: 11400000, guid: 5ccde0c55a81fa64da592c10b6e57884, type: 2}
-  vehicles:
-  - {fileID: 9100000, guid: c6897fb891066944da3dbeaa49ab7f54, type: 2}
-  - {fileID: 9100000, guid: 093d4233db5eec04a9768a8c77bd423f, type: 2}
+  vehicleAnimList:
+  - {fileID: 22100000, guid: e0b1e9eccd7480c43971840d9f159ff1, type: 2}
+  - {fileID: 22100000, guid: dde3be15e16ab654b9b54500ed74cec2, type: 2}
   balloonPrefab: {fileID: 5773630731183711922, guid: c585ffdb4ee258a4aa8154082f514ff7, type: 3}
 --- !u!4 &2600470
 Transform:
@@ -2567,16 +2567,16 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 31916816a54a1ea49875ab88e31ec88d, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.8
   m_Pitch: 1
   Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
   Priority: 128
-  DopplerLevel: 1
+  DopplerLevel: 0
   MinDistance: 1
-  MaxDistance: 500
+  MaxDistance: 50
   Pan2D: 0
   rolloffMode: 0
   BypassEffects: 0
@@ -3462,6 +3462,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8eb2e89470b69343bb1f1ec48983dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  exitPopup: {fileID: 0}
+  sfxClips: []
 --- !u!4 &1565094546
 Transform:
   m_ObjectHideFlags: 0
@@ -4166,6 +4168,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1487556799850409869, guid: c02335fb6896eb34bafb9199fff709f5, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 6745084306992090857}
     - target: {fileID: 3214550950445389264, guid: c02335fb6896eb34bafb9199fff709f5, type: 3}
       propertyPath: player
       value: 
@@ -4174,10 +4180,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: CanvasBattleUI
       objectReference: {fileID: 0}
-    - target: {fileID: 6565199774514747143, guid: c02335fb6896eb34bafb9199fff709f5, type: 3}
-      propertyPath: m_PixelPerfect
-      value: 1
-      objectReference: {fileID: 0}
+    - target: {fileID: 3449314151908953280, guid: c02335fb6896eb34bafb9199fff709f5, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 1624466620073532301}
     - target: {fileID: 7143112770785905543, guid: c02335fb6896eb34bafb9199fff709f5, type: 3}
       propertyPath: player
       value: 

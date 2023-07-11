@@ -1,10 +1,7 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 
-public enum CellObject { Nothing, Breakable, UnBreakable, Bush}
+public enum CellObject { Nothing, Breakable, UnBreakable, Bush, Balloon}
 public class Cell
 {
     public event EventHandler<OnCellAttackedArgs> OnCellAttacked;

@@ -1,9 +1,5 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 
 public class Balloon : MonoBehaviour
 {
@@ -33,7 +29,7 @@ public class Balloon : MonoBehaviour
         }
         else
         {
-            currentCell.cellObject = CellObject.Breakable;
+            currentCell.cellObject = CellObject.Balloon;
         }
 
         currentCell.OnCellAttacked += Balloon_OnCellAttacked;
@@ -65,6 +61,7 @@ public class Balloon : MonoBehaviour
         TileManager.Instance.CoordinateToCell(position).cellObject = CellObject.Nothing;
 
         AttackValidCell();
+        GameManager.Instance.PlaySound(GameManager.SFXName.Explode);
         Destroy(gameObject);
     }
 

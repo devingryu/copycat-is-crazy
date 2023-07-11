@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Animations;
 using UnityEngine;
 
 public enum UsableItemName { Can, Needle, Shield }
@@ -10,7 +9,7 @@ public class ItemCache : MonoBehaviour
     public static ItemCache Instance { get; private set; }
     [SerializeField] List<DropItem> dropItemPrefabs;
     [SerializeField] List<UsableItemDataSO> usableItemData;
-    [SerializeField] List<AnimatorController> vehicles;
+    [SerializeField] List<AnimatorOverrideController> vehicleAnimList;
     public Balloon balloonPrefab;
 
     private void Awake()
@@ -35,8 +34,8 @@ public class ItemCache : MonoBehaviour
         return usableItemData[(int)name];
     }
 
-    public AnimatorController GetVehicleController(VehicleName name)
+    public AnimatorOverrideController GetVehicleController(VehicleName name)
     {
-        return vehicles[(int)name];
+        return vehicleAnimList[(int)name];
     }
 }

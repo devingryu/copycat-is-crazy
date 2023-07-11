@@ -16,6 +16,7 @@ public class Bush : MonoBehaviour
     private void Bush_OnCellAttacked(object sender, Cell.OnCellAttackedArgs e)
     {
         Delete();
+
     }
 
     private void Delete()

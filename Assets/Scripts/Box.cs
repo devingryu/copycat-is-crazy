@@ -1,7 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
-using System.Data;
-using UnityEditorInternal;
 using UnityEngine;
 
 public class Box : MonoBehaviour
@@ -58,6 +55,7 @@ public class Box : MonoBehaviour
 
     private IEnumerator MoveRoutine(Vector3 position)
     {
+        GameManager.Instance.PlaySound(GameManager.SFXName.PushBox);
         while(Vector3.Distance(position, transform.position) > 0.01f)
         {
             yield return null;

@@ -1,7 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -13,7 +12,11 @@ public class GameManager : MonoBehaviour
     {
         if(Instance == null)
         {
+            sfxChannels = new AudioSource[sfxChannelCount];
             Instance = this;
+            for(int i = 1;i<= sfxChannelCount; ++i)
+                sfxChannels[i-1] = transform.Find("sfx" + i).GetComponent<AudioSource>();
+            exitPopup.gameObject.SetActive(false);
             DontDestroyOnLoad(gameObject);
         }
         else
@@ -24,7 +27,10 @@ public class GameManager : MonoBehaviour
             }
         }
         battleMapNumber = SceneManager.sceneCountInBuildSettings - 3;
+        
     }
+
+    #region GameFlow
 
     public void SetWinner(bool isFirstPlayerDefeated)
     {
@@ -50,4 +56,81 @@ public class GameManager : MonoBehaviour
         battleCount = battleCount % battleMapNumber + 1; // 1 ~ map number
         SceneManager.LoadScene("GameScene" + battleCount);
     }
+    #endregion
+
+    #region ExitPopUp
+    [SerializeField] Transform exitPopup;
+    private void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            if(exitPopup.gameObject.activeSelf)
+            {
+                Time.timeScale = 1;
+                exitPopup.gameObject.SetActive(false);
+            }
+            else
+            {
+                Time.timeScale = 0;
+                exitPopup.gameObject.SetActive(true);
+            }
+        }
+    }
+
+    public void TurnOffProgram()
+    {
+
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
+    }
+#endregion
+
+    #region music
+    public enum SFXName 
+    {
+        Damaged, 
+        PlaceBalloon, 
+        CollectItem, 
+        PushBox, 
+        RideSomething,
+        Explode,
+    }
+
+    [SerializeField] AudioClip[] sfxClips;
+    const int sfxChannelCount = 3;
+    int availableSfxChannelIndex = 0;
+    AudioSource[] sfxChannels;
+
+    public void PlaySound(SFXName name)
+    {
+        switch(name)
+        {
+            case SFXName.Damaged:
+                sfxChannels[availableSfxChannelIndex].clip = sfxClips[(int)SFXName.Damaged];
+                break;
+            case SFXName.PlaceBalloon:
+                sfxChannels[availableSfxChannelIndex].clip = sfxClips[(int)SFXName.PlaceBalloon];
+                break;
+            case SFXName.CollectItem:
+                sfxChannels[availableSfxChannelIndex].clip = sfxClips[(int)SFXName.CollectItem];
+                break;
+            case SFXName.PushBox:
+                sfxChannels[availableSfxChannelIndex].clip = sfxClips[(int)SFXName.PushBox];
+                break;
+            case SFXName.RideSomething:
+                sfxChannels[availableSfxChannelIndex].clip = sfxClips[(int)SFXName.RideSomething];
+                break;
+            case SFXName.Explode:
+                sfxChannels[availableSfxChannelIndex].clip = sfxClips[(int)SFXName.Explode];
+                break;
+        }
+
+        sfxChannels[availableSfxChannelIndex].Play();
+        availableSfxChannelIndex = (availableSfxChannelIndex + 1) % sfxChannelCount;
+    }
+
+    #endregion
 }
