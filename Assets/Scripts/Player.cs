@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,16 +7,23 @@ public class Player : MonoBehaviour
 {
     [SerializeField] SpriteRenderer shieldTimer;
     [SerializeField] GameObject displayer;
+    [SerializeField] Animator vehicle;
     [SerializeField] LayerMask mask; //player can detect this mask
     List<UsableItem> usableItemInventory; //usable item contains usable item amount
 
 
-    const int speedMaxUpgrade = 8;
+    const int speedMaxUpgrade = 7;
     const int balloonNumberMaxUpgrade = 5;
     const int balloonRangeMaxUpgrade = 5;
     int healthAmount = 3;
     List<Stat> statList;
 
+    public event EventHandler<OnItemUseEventArgs> OnItemUse;
+
+    public class OnItemUseEventArgs : EventArgs
+    {
+        public UsableItem itemType;
+    }
 
     int balloonNumberMax = 3;
     float speed = 3;
@@ -110,7 +118,7 @@ public class Player : MonoBehaviour
 
     private void Awake()
     {
-        ItemInventoryInit();
+        
         playerAnim = GetComponent<Animator>();
         statList = new List<Stat>();
         playerRenderer = GetComponent<SpriteRenderer>();
@@ -133,23 +141,54 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
+        ItemInventoryInit();
         coordinate = TileManager.Instance.WorldToCoordinate(transform.position);
         TileManager.Instance.WorldToCell(coordinate).OnCellAttacked += Player_OnCellAttacked;
     }
 
     private void Update()
     {
-        Vector2 direction = Vector2.zero;
-        bool isMoving = false;
+        Move(out Vector2 direction);
+
         if(Input.GetKeyDown(placeBalloon))
             PlaceBalloon();
         if (Input.GetKeyDown(item1))
+        {
             usableItemInventory[0].Use(this);
+            OnItemUse?.Invoke(this, new OnItemUseEventArgs { itemType = usableItemInventory[0] });
+        }
         if (Input.GetKeyDown(item2))
+        {
             usableItemInventory[1].Use(this);
+            OnItemUse?.Invoke(this, new OnItemUseEventArgs { itemType = usableItemInventory[1] });
+        }
         if (Input.GetKeyDown(item3))
+        {
             usableItemInventory[2].Use(this);
+            OnItemUse?.Invoke(this, new OnItemUseEventArgs { itemType = usableItemInventory[2] });
+        }
 
+        Vector3Int nextPos = TileManager.Instance.WorldToCoordinate(transform.position);
+        if (coordinate != nextPos)
+        {
+            bool notInBush = TileManager.Instance.WorldToCell(nextPos).cellObject != CellObject.Bush;
+            playerRenderer.enabled = notInBush;
+            displayer.SetActive(notInBush);
+            shieldTimer.enabled = notInBush;
+            vehicle.GetComponent<SpriteRenderer>().enabled = notInBush;
+
+            TileManager.Instance.WorldToCell(nextPos).OnCellAttacked += Player_OnCellAttacked;
+            TileManager.Instance.WorldToCell(coordinate).OnCellAttacked -= Player_OnCellAttacked;
+            coordinate = nextPos;
+        }
+
+        FrontCheck(direction * 0.51f);
+    }
+
+    private void Move(out Vector2 direction)
+    {
+        direction = Vector2.zero;
+        bool isMoving = false;
         if (Input.GetKey(up))
         {
             playerState = State.Up;
@@ -175,27 +214,22 @@ public class Player : MonoBehaviour
             isMoving = true;
         }
 
-        Vector3Int nextPos = TileManager.Instance.WorldToCoordinate(transform.position);
-        if (coordinate != nextPos)
-        {
-            bool notInBush = TileManager.Instance.WorldToCell(nextPos).cellObject != CellObject.Bush;
-            playerRenderer.enabled = notInBush;
-            displayer.SetActive(notInBush);
-            shieldTimer.enabled = notInBush;
-            TileManager.Instance.WorldToCell(nextPos).OnCellAttacked += Player_OnCellAttacked;
-            TileManager.Instance.WorldToCell(coordinate).OnCellAttacked -= Player_OnCellAttacked;
-            coordinate = nextPos;
-        }
-
         playerAnim.SetBool("isMoving", isMoving);
-        if(isMoving)
+        if (vehicle.runtimeAnimatorController != null)
+            vehicle.SetBool("isMoving", isMoving);
+
+        if (isMoving)
         {
             playerAnim.SetFloat("dirX", direction.x);
             playerAnim.SetFloat("dirY", direction.y);
+            if(vehicle.runtimeAnimatorController != null)
+            {
+                vehicle.SetFloat("dirX", direction.x);
+                vehicle.SetFloat("dirY", direction.y);
+            }
         }
 
         playerRb.velocity = direction * speed;
-        FrontCheck(direction * 0.51f);
     }
 
     private void Player_OnCellAttacked(object sender, Cell.OnCellAttackedArgs e)
@@ -314,16 +348,23 @@ public class Player : MonoBehaviour
                 pirateTurtle = true;
         }
 
+        balloonRange = Mathf.Clamp(balloonRange, 1, balloonRangeMaxUpgrade);
+        balloonNumberMax = Mathf.Clamp(balloonNumberMax, 1, balloonNumberMaxUpgrade);
+        balloonNumber = Mathf.Clamp(balloonNumber, 1, balloonNumberMaxUpgrade);
         if (turtle)
         {
             speed *= 0.5f;
             this.turtle = Turtle.Normal;
+            playerAnim.SetBool("isRiding", true);
+            vehicle.runtimeAnimatorController = ItemCache.Instance.GetVehicleController(VehicleName.Turtle); 
         }
 
         if (pirateTurtle)
         {
             speed = speedMaxUpgrade;
             this.turtle = Turtle.Pirate;
+            playerAnim.SetBool("isRiding", true);
+            vehicle.runtimeAnimatorController = ItemCache.Instance.GetVehicleController(VehicleName.Pirate);
         }
 
     }
@@ -344,6 +385,9 @@ public class Player : MonoBehaviour
             if (statList[i].turtle)
                 statList.RemoveAt(i);
         }
+
+        playerAnim.SetBool("isRiding", false);
+        vehicle.gameObject.SetActive(false);
     }
 
     public void UpgradeTurtle()
@@ -371,6 +415,11 @@ public class Player : MonoBehaviour
         Can can = new Can();
         usableItemInventory = new List<UsableItem> { needle, shield, can };
         //set init amount
-        needle.SetAmount(2); shield.SetAmount(2); can.SetAmount(2);
+        needle.SetAmount(2);
+        OnItemUse?.Invoke(this, new OnItemUseEventArgs { itemType = needle });
+        shield.SetAmount(2);
+        OnItemUse?.Invoke(this, new OnItemUseEventArgs { itemType = shield });
+        can.SetAmount(2);
+        OnItemUse?.Invoke(this, new OnItemUseEventArgs { itemType = can });
     }
 }

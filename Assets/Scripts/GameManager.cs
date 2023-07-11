@@ -23,7 +23,7 @@ public class GameManager : MonoBehaviour
                 Destroy(gameObject);
             }
         }
-        battleMapNumber = SceneManager.sceneCountInBuildSettings - 1;
+        battleMapNumber = SceneManager.sceneCountInBuildSettings - 3;
     }
 
     public void SetWinner(bool isFirstPlayerDefeated)
@@ -47,7 +47,7 @@ public class GameManager : MonoBehaviour
     public void StartGame()
     {
         System.GC.Collect();
-        int mapIndex = battleCount % battleMapNumber + 1; // 1 ~ map number
-        SceneManager.LoadScene("GameScene" + mapIndex);
+        battleCount = battleCount % battleMapNumber + 1; // 1 ~ map number
+        SceneManager.LoadScene("GameScene" + battleCount);
     }
 }

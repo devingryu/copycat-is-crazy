@@ -26,4 +26,5 @@ public abstract class UsableItem
 
     protected abstract bool CanUse(Player player);
     protected abstract void Effect(Player player);
+    public abstract Sprite GetSprite();
 }

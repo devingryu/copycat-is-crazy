@@ -5,6 +5,10 @@ using UnityEngine;
 
 public class Shield : UsableItem
 {
+    public override Sprite GetSprite()
+    {
+        return ItemCache.Instance.GetUsableItemData(UsableItemName.Shield).sprite;
+    }
     protected override bool CanUse(Player player)
     {
         return !player.IsShield && !player.IsTrapped;

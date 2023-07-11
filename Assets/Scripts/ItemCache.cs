@@ -1,11 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Animations;
 using UnityEngine;
 
+public enum UsableItemName { Can, Needle, Shield }
+public enum VehicleName { Turtle, Pirate }
 public class ItemCache : MonoBehaviour
 {
     public static ItemCache Instance { get; private set; }
     [SerializeField] List<DropItem> dropItemPrefabs;
+    [SerializeField] List<UsableItemDataSO> usableItemData;
+    [SerializeField] List<AnimatorController> vehicles;
     public Balloon balloonPrefab;
 
     private void Awake()
@@ -23,5 +28,15 @@ public class ItemCache : MonoBehaviour
     {
         int randomIndex = Random.Range(0, dropItemPrefabs.Count);
         Instantiate(dropItemPrefabs[randomIndex], position, Quaternion.identity);
+    }
+
+    public UsableItemDataSO GetUsableItemData(UsableItemName name)
+    {
+        return usableItemData[(int)name];
+    }
+
+    public AnimatorController GetVehicleController(VehicleName name)
+    {
+        return vehicles[(int)name];
     }
 }
