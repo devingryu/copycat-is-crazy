@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class Player : MonoBehaviour
 {
     [SerializeField] SpriteRenderer shieldTimer;
@@ -30,6 +31,8 @@ public class Player : MonoBehaviour
     float speed = 3.5f;
     int balloonRange = 1;
     int balloonNumber = 0;
+    public static bool FirstPlayerDefeat = false;
+    public static bool SecondPlayerDefeat = false;
     public int Health
     {
         get { return healthAmount; }
@@ -50,8 +53,16 @@ public class Player : MonoBehaviour
 
             if(healthAmount <= 0)
             {
+                if (isFirstPlayer)
+                {
+                    FirstPlayerDefeat = true;
+                }
+                else
+                {
+                    SecondPlayerDefeat = true;
+                }
                 //die
-                GameManager.Instance.SetWinner(isFirstPlayer);
+                
                 GameManager.Instance.EndGame();
             }
         }

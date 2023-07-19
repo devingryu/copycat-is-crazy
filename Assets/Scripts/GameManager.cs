@@ -5,9 +5,10 @@ using UnityEngine.UI;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance {  get; private set; }
-    int winner = 0; // 1p : 1, 2p : 2
+    int winner = 0; // 1p : 1, 2p : 2 , draw : 3
     int battleMapNumber = 0;
     int battleCount = 0;
+    public FadeIn Fadein;
     private void Awake()
     {
         if(Instance == null)
@@ -32,12 +33,9 @@ public class GameManager : MonoBehaviour
 
     #region GameFlow
 
-    public void SetWinner(bool isFirstPlayerDefeated)
+    public void SetWinner(int Winner)
     {
-        if(isFirstPlayerDefeated)
-            winner = 2;
-        else
-            winner = 1;
+        winner = Winner;
     }
 
     public int GetWinner()
@@ -55,6 +53,7 @@ public class GameManager : MonoBehaviour
         System.GC.Collect();
         battleCount = battleCount % battleMapNumber + 1; // 1 ~ map number
         SceneManager.LoadScene("GameScene" + battleCount);
+        
     }
     #endregion
 
@@ -76,6 +75,8 @@ public class GameManager : MonoBehaviour
             }
         }
     }
+
+
 
     public void TurnOffProgram()
     {

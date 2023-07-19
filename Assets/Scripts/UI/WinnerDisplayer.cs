@@ -10,7 +10,18 @@ public class WinnerDisplayer : MonoBehaviour
 
     private void Start()
     {
+        if (Player.FirstPlayerDefeat && Player.SecondPlayerDefeat)
+            GameManager.Instance.SetWinner(3);
+
+        else if (Player.FirstPlayerDefeat)
+            GameManager.Instance.SetWinner(2);
+        else
+            GameManager.Instance.SetWinner(1);
+
         winner = GameManager.Instance.GetWinner();
-        whoIsWinnerText.SetText(winner + "P가 승리했습니다!");
+        if(winner != 3)
+            whoIsWinnerText.SetText(winner + "P가 승리했습니다!");
+        else
+            whoIsWinnerText.SetText("양 플레이어가 비겼습니다!");
     }
 }
