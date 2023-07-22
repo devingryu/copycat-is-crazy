@@ -72,7 +72,7 @@ public class Box : MonoBehaviour
         Cell currentCell = TileManager.Instance.CoordinateToCell(position);
         currentCell.cellObject = CellObject.Nothing;
         currentCell.OnCellAttacked -= Box_OnCellAttacked;
-        if (Random.value < itemDropPercentage)
+        if (Random.value < itemDropPercentage && GameManager.battleCount != 3)
             ItemCache.Instance.SpawnRandomDropItem(transform.position);
     }
 }

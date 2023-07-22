@@ -33,6 +33,7 @@ public class Player : MonoBehaviour
     int balloonNumber = 0;
     public static bool FirstPlayerDefeat = false;
     public static bool SecondPlayerDefeat = false;
+
     public int Health
     {
         get { return healthAmount; }
@@ -168,17 +169,17 @@ public class Player : MonoBehaviour
 
         if(Input.GetKeyDown(placeBalloon))
             PlaceBalloon();
-        if (Input.GetKeyDown(item1))
+        if (Input.GetKeyDown(item1) && GameManager.battleCount != 3)
         {
             usableItemInventory[0].Use(this);
             OnItemUse?.Invoke(this, new OnItemUseEventArgs { itemType = usableItemInventory[0] });
         }
-        if (Input.GetKeyDown(item2))
+        if (Input.GetKeyDown(item2) && GameManager.battleCount != 3)
         {
             usableItemInventory[1].Use(this);
             OnItemUse?.Invoke(this, new OnItemUseEventArgs { itemType = usableItemInventory[1] });
         }
-        if (Input.GetKeyDown(item3))
+        if (Input.GetKeyDown(item3) && GameManager.battleCount != 3)
         {
             usableItemInventory[2].Use(this);
             OnItemUse?.Invoke(this, new OnItemUseEventArgs { itemType = usableItemInventory[2] });

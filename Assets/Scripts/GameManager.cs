@@ -7,7 +7,7 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance {  get; private set; }
     int winner = 0; // 1p : 1, 2p : 2 , draw : 3
     int battleMapNumber = 0;
-    int battleCount = 0;
+    public static int battleCount = 0;
     public FadeIn Fadein;
     private void Awake()
     {
