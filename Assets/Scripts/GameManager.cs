@@ -28,6 +28,8 @@ public class GameManager : MonoBehaviour
             }
         }
         battleMapNumber = SceneManager.sceneCountInBuildSettings - 3;
+
+        Fadein?.FadeIN();
         
     }
 
@@ -49,7 +51,7 @@ public class GameManager : MonoBehaviour
     }
 
     public void StartGame()
-    {
+    { 
         System.GC.Collect();
         battleCount = battleCount % battleMapNumber + 1; // 1 ~ map number
         SceneManager.LoadScene("GameScene" + battleCount);
