@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
     int battleMapNumber = 0;
     public static int battleCount = 0;
     public FadeIn Fadein;
+    public GameObject timerObject;
     private void Awake()
     {
         if(Instance == null)
@@ -55,7 +56,16 @@ public class GameManager : MonoBehaviour
         System.GC.Collect();
         battleCount = battleCount % battleMapNumber + 1; // 1 ~ map number
         SceneManager.LoadScene("GameScene" + battleCount);
+
+        if(battleCount == 4) //е╦юс╬Нец ╦й
+        {
+            ActivateTimer();
+        }
         
+    }
+    void ActivateTimer()
+    {
+        timerObject.GetComponent<Timer>().enabled = true;
     }
     #endregion
 

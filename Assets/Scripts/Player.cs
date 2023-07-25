@@ -17,6 +17,8 @@ public class Player : MonoBehaviour
     const int balloonNumberMaxUpgrade = 5;
     const int balloonRangeMaxUpgrade = 5;
     int healthAmount = 3;
+    public int FirKill = 0;
+    public int SecKill = 0;
     List<Stat> statList;
 
     public event EventHandler<OnItemUseEventArgs> OnItemUse;
@@ -52,19 +54,23 @@ public class Player : MonoBehaviour
             OnDamage?.Invoke(this, EventArgs.Empty);
             IsTrapped = false;
 
-            if(healthAmount <= 0)
+            if(GameManager.battleCount != 4) //타임어택 맵 제외
             {
-                if (isFirstPlayer)
+            
+                if(healthAmount <= 0)
                 {
-                    FirstPlayerDefeat = true;
-                }
-                else
-                {
-                    SecondPlayerDefeat = true;
-                }
-                //die
+                    if (isFirstPlayer)
+                    {
+                        FirstPlayerDefeat = true;
+                    }
+                    else
+                    {
+                        SecondPlayerDefeat = true;
+                    }
+                    //die
                 
-                GameManager.Instance.EndGame();
+                    GameManager.Instance.EndGame();
+                }
             }
         }
     }
