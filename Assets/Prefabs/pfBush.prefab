@@ -32,7 +32,7 @@ Transform:
   m_Children:
   - {fileID: 3671272980060843602}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!58 &3062029844009597051
 CircleCollider2D:
@@ -154,7 +154,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: a3a03ee99e4e51e4e8b95fce35f0bf04, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e42a071429946ed45a5914b4516392d3, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

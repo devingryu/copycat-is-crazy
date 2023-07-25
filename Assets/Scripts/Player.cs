@@ -447,9 +447,9 @@ public class Player : MonoBehaviour
     void InitStat()
     {
         speed = 3;
-        balloonNumberMax = 3;
         balloonRange = 1;
-        balloonNumber = 3;
+        balloonNumberMax = 1;
+        balloonNumber = balloonNumberMax;
         turtle = Turtle.None;
     }
 
