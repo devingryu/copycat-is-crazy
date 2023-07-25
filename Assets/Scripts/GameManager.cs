@@ -55,7 +55,19 @@ public class GameManager : MonoBehaviour
     public void StartGame()
     { 
         System.GC.Collect();
-        battleCount = battleCount % battleMapNumber + 1; // 1 ~ map number
+        battleCount = Random.Range(0, battleMapNumber) + 1;  // 1 ~ map number
+
+        if(battleCount==1||battleCount==2)
+        {
+
+        } else if(battleCount==3)
+        {
+
+        } else if(battleCount==4)
+        {
+
+        }
+
         SceneManager.LoadScene("GameScene" + battleCount);
 
         if(battleCount == 4) //е╦юс╬Нец ╦й
