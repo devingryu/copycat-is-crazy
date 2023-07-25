@@ -17,8 +17,8 @@ public class Player : MonoBehaviour
     const int balloonNumberMaxUpgrade = 5;
     const int balloonRangeMaxUpgrade = 5;
     int healthAmount = 3;
-    public int FirKill = 0;
-    public int SecKill = 0;
+    public static int FirKill = 0;
+    public static int SecKill = 0;
     List<Stat> statList;
 
     public event EventHandler<OnItemUseEventArgs> OnItemUse;
@@ -35,6 +35,9 @@ public class Player : MonoBehaviour
     int balloonNumber = 0;
     public static bool FirstPlayerDefeat = false;
     public static bool SecondPlayerDefeat = false;
+    FirKillCount FirKillCount;
+    SecKillCount SecKillCount;
+
 
     public int Health
     {
@@ -72,6 +75,7 @@ public class Player : MonoBehaviour
                     GameManager.Instance.EndGame();
                 }
             }
+            
         }
     }
     
@@ -158,7 +162,7 @@ public class Player : MonoBehaviour
         {
             //2P ¡∂¿€≈∞
             up = KeyCode.UpArrow; down = KeyCode.DownArrow; left = KeyCode.LeftArrow; right = KeyCode.RightArrow;
-            placeBalloon = KeyCode.RightShift; item1 = KeyCode.Home; item2 = KeyCode.Insert; item3 = KeyCode.PageUp;
+            placeBalloon = KeyCode.RightShift; item1 = KeyCode.Insert; item2 = KeyCode.Home; item3 = KeyCode.PageUp;
         }
     }
 
@@ -167,6 +171,8 @@ public class Player : MonoBehaviour
         ItemInventoryInit();
         coordinate = TileManager.Instance.WorldToCoordinate(transform.position);
         TileManager.Instance.WorldToCell(coordinate).OnCellAttacked += Player_OnCellAttacked;
+        
+        
     }
 
     private void Update()
@@ -201,6 +207,7 @@ public class Player : MonoBehaviour
         }
 
         FrontCheck(direction);
+
     }
 
 
@@ -325,7 +332,23 @@ public class Player : MonoBehaviour
                 if (isTrapped) return;
 
                 if (otherPlayer.IsTrapped)
+                {
                     otherPlayer.Health--;
+                    if(GameManager.battleCount == 4) { 
+                        if (isFirstPlayer)
+                        {
+                            FirKill++;
+                            FirKillCount.IncreaseKillCount();
+                        }
+                        else
+                        {
+                            SecKill++;
+                            SecKillCount.IncreaseKillCount();
+                        }
+                    }
+                }
+                    
+                
             }
         }
     }
@@ -359,6 +382,19 @@ public class Player : MonoBehaviour
             if(timer < 0)
             {
                 Health--;
+                if (GameManager.battleCount == 4)
+                {
+                    if (isFirstPlayer)
+                    {
+                        SecKill++;
+                        SecKillCount.IncreaseKillCount();
+                    }
+                        
+                    else { 
+                        FirKill++;
+                        FirKillCount.IncreaseKillCount();
+                    }
+                }
                 break;
             }
             yield return null;

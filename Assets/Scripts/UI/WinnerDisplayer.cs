@@ -25,10 +25,24 @@ public class WinnerDisplayer : MonoBehaviour
                 whoIsWinnerText.SetText(winner + "P가 승리했습니다!");
             else
                 whoIsWinnerText.SetText("양 플레이어가 비겼습니다!");
+
+            Player.FirstPlayerDefeat = false;
+            Player.SecondPlayerDefeat = false;
         }
         else
         {
-            
+            if (Player.FirKill > Player.SecKill)
+                GameManager.Instance.SetWinner(1);
+            else if (Player.FirKill < Player.SecKill)
+                GameManager.Instance.SetWinner(2);
+            else
+                GameManager.Instance.SetWinner(3);
+
+            winner = GameManager.Instance.GetWinner();
+            if (winner != 3)
+                whoIsWinnerText.SetText(winner + "P가 승리했습니다!");
+            else
+                whoIsWinnerText.SetText("양 플레이어가 비겼습니다!");
         }
     }
 }

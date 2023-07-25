@@ -10,6 +10,8 @@ public class GameManager : MonoBehaviour
     public static int battleCount = 0;
     public FadeIn Fadein;
     public GameObject timerObject;
+    FirKillCount FirKillCount;
+    SecKillCount SecKillCount;
     private void Awake()
     {
         if(Instance == null)
@@ -30,8 +32,7 @@ public class GameManager : MonoBehaviour
         }
         battleMapNumber = SceneManager.sceneCountInBuildSettings - 3;
 
-        Fadein?.FadeIN();
-        
+        Fadein?.FadeIN();    
     }
 
     #region GameFlow
