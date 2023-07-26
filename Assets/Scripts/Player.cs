@@ -17,8 +17,6 @@ public class Player : MonoBehaviour
     const int balloonNumberMaxUpgrade = 5;
     const int balloonRangeMaxUpgrade = 5;
     int healthAmount = 3;
-    public static int FirKill = 0;
-    public static int SecKill = 0;
     List<Stat> statList;
 
     public event EventHandler<OnItemUseEventArgs> OnItemUse;
@@ -35,8 +33,6 @@ public class Player : MonoBehaviour
     int balloonNumber = 0;
     public static bool FirstPlayerDefeat = false;
     public static bool SecondPlayerDefeat = false;
-    FirKillCount FirKillCount;
-    SecKillCount SecKillCount;
 
 
     public int Health
@@ -337,13 +333,11 @@ public class Player : MonoBehaviour
                     if(GameManager.battleCount == 4) { 
                         if (isFirstPlayer)
                         {
-                            FirKill++;
-                            FirKillCount.IncreaseKillCount();
+                            GameManager.Instance.FirKillUpdate();
                         }
                         else
                         {
-                            SecKill++;
-                            SecKillCount.IncreaseKillCount();
+                            GameManager.Instance.SecKillUpdate();
                         }
                     }
                 }
@@ -386,13 +380,11 @@ public class Player : MonoBehaviour
                 {
                     if (isFirstPlayer)
                     {
-                        SecKill++;
-                        SecKillCount.IncreaseKillCount();
+                        GameManager.Instance.SecKillUpdate();
                     }
                         
-                    else { 
-                        FirKill++;
-                        FirKillCount.IncreaseKillCount();
+                    else {
+                        GameManager.Instance.FirKillUpdate();
                     }
                 }
                 break;
