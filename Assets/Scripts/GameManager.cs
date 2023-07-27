@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
@@ -10,8 +11,9 @@ public class GameManager : MonoBehaviour
     public static int battleCount = 0;
     public FadeIn Fadein;
     public GameObject timerObject;
-    FirKillCount FirKillCount;
-    SecKillCount SecKillCount;
+
+    public int[] Kill = new int[2];
+
     private void Awake()
     {
         if(Instance == null)
@@ -32,7 +34,16 @@ public class GameManager : MonoBehaviour
         }
         battleMapNumber = SceneManager.sceneCountInBuildSettings - 3;
 
-        Fadein?.FadeIN();    
+        Fadein?.FadeIN();
+        Kill[0] = 0;
+        Kill[1] = 0;
+        
+    }
+
+    private void Start()
+    {
+        
+
     }
 
     #region GameFlow
@@ -55,7 +66,19 @@ public class GameManager : MonoBehaviour
     public void StartGame()
     { 
         System.GC.Collect();
-        battleCount = battleCount % battleMapNumber + 1; // 1 ~ map number
+        battleCount = Random.Range(0, battleMapNumber) + 1;  // 1 ~ map number
+
+        if(battleCount==1||battleCount==2)
+        {
+
+        } else if(battleCount==3)
+        {
+
+        } else if(battleCount==4)
+        {
+
+        }
+
         SceneManager.LoadScene("GameScene" + battleCount);
 
         if(battleCount == 4) //е╦юс╬Нец ╦й
@@ -67,6 +90,15 @@ public class GameManager : MonoBehaviour
     void ActivateTimer()
     {
         timerObject.GetComponent<Timer>().enabled = true;
+    }
+
+    public void FirKillUpdate()
+    {
+        Kill[0]++;
+    }
+    public void SecKillUpdate()
+    {
+        Kill[1]++;
     }
     #endregion
 
@@ -87,6 +119,7 @@ public class GameManager : MonoBehaviour
                 exitPopup.gameObject.SetActive(true);
             }
         }
+        
     }
 
 

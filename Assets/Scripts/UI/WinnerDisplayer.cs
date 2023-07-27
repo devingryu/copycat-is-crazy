@@ -31,9 +31,9 @@ public class WinnerDisplayer : MonoBehaviour
         }
         else
         {
-            if (Player.FirKill > Player.SecKill)
+            if (GameManager.Instance.Kill[0] > GameManager.Instance.Kill[1])
                 GameManager.Instance.SetWinner(1);
-            else if (Player.FirKill < Player.SecKill)
+            else if (GameManager.Instance.Kill[0] < GameManager.Instance.Kill[1])
                 GameManager.Instance.SetWinner(2);
             else
                 GameManager.Instance.SetWinner(3);

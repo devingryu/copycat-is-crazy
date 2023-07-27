@@ -2897,9 +2897,9 @@ GameObject:
   - component: {fileID: 775305578}
   - component: {fileID: 775305581}
   - component: {fileID: 775305580}
-  - component: {fileID: 775305579}
+  - component: {fileID: 775305582}
   m_Layer: 5
-  m_Name: 2p KillCount
+  m_Name: 2pKillCount
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2925,19 +2925,6 @@ RectTransform:
   m_AnchoredPosition: {x: 27, y: 318}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &775305579
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 775305577}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 22daf3abe1086b14a926daa0f6f22b93, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  killCountText: {fileID: 775305580}
 --- !u!114 &775305580
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3035,6 +3022,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 775305577}
   m_CullTransparentMesh: 1
+--- !u!114 &775305582
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 775305577}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 016776d4b391cb6439cfe1781b35b61a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  KillCount: {fileID: 775305580}
 --- !u!1001 &783228410
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3837,9 +3837,9 @@ GameObject:
   - component: {fileID: 1450802169}
   - component: {fileID: 1450802172}
   - component: {fileID: 1450802171}
-  - component: {fileID: 1450802170}
+  - component: {fileID: 1450802173}
   m_Layer: 5
-  m_Name: 1p KillCount
+  m_Name: 1pKillCount
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3865,19 +3865,6 @@ RectTransform:
   m_AnchoredPosition: {x: 28, y: 316}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1450802170
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1450802168}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6b377afa2882f1546a577d32752c513a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  killCountText: {fileID: 1450802171}
 --- !u!114 &1450802171
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3975,6 +3962,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1450802168}
   m_CullTransparentMesh: 1
+--- !u!114 &1450802173
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1450802168}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6386bc49edfb8e49aa5e266d94436df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  KillCount: {fileID: 1450802171}
 --- !u!4 &1479898936 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8904655072495361939, guid: d033a931abf1046458dc877e54e8dde4, type: 3}
@@ -4077,6 +4077,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Fadein: {fileID: 1943449682}
   timerObject: {fileID: 0}
+  Kill: 0000000000000000
+  P1Kill: {fileID: 1450802171}
+  P2Kill: {fileID: 775305580}
   exitPopup: {fileID: 0}
   sfxClips: []
 --- !u!4 &1565094546
@@ -4645,7 +4648,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d566efd8ca46be449a1dac3d46f879e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  totalTime: 60
+  totalTime: 121
 --- !u!114 &2037442039
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4943,55 +4946,18 @@ PrefabInstance:
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 113588741714649339, guid: c02335fb6896eb34bafb9199fff709f5, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1943449681}
+      addedObject: {fileID: 2037442037}
     - targetCorrespondingSourceObject: {fileID: 113588741714649339, guid: c02335fb6896eb34bafb9199fff709f5, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 2037442037}
+      addedObject: {fileID: 1943449681}
     - targetCorrespondingSourceObject: {fileID: 5621310773383578593, guid: c02335fb6896eb34bafb9199fff709f5, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1450802169}
     - targetCorrespondingSourceObject: {fileID: 6482696783202333883, guid: c02335fb6896eb34bafb9199fff709f5, type: 3}
       insertIndex: -1
       addedObject: {fileID: 775305578}
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 3370760039130179580, guid: c02335fb6896eb34bafb9199fff709f5, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 5099231748476963570}
-    - targetCorrespondingSourceObject: {fileID: 3370760039130179580, guid: c02335fb6896eb34bafb9199fff709f5, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 5099231748476963569}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c02335fb6896eb34bafb9199fff709f5, type: 3}
---- !u!1 &5099231748476963568 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3370760039130179580, guid: c02335fb6896eb34bafb9199fff709f5, type: 3}
-  m_PrefabInstance: {fileID: 5099231748476963567}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &5099231748476963569
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5099231748476963568}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 22daf3abe1086b14a926daa0f6f22b93, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  killCountText: {fileID: 775305580}
---- !u!114 &5099231748476963570
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5099231748476963568}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6b377afa2882f1546a577d32752c513a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  killCountText: {fileID: 1450802171}
 --- !u!1001 &6745084306992090856
 PrefabInstance:
   m_ObjectHideFlags: 0
