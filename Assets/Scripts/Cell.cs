@@ -1,18 +1,7 @@
 using System;
 using UnityEngine;
 
-[Flags]
-public enum CellObject 
-{ 
-    Nothing = 0, 
-    Box = 1, 
-    Bush = 4, 
-    Balloon = 8, 
-    Spike = 16,
-    DropItem = 32,
-    Wall = 64,
-    Unbreakable = 128,
-}
+public enum CellObject { Nothing, Breakable, UnBreakable, Bush, Balloon}
 public class Cell
 {
     public event EventHandler<OnCellAttackedArgs> OnCellAttacked;
@@ -29,6 +18,4 @@ public class Cell
     {
         OnCellAttacked?.Invoke(this, new OnCellAttackedArgs { position = cellPos });
     }
-
-    public Spike spike = null;
 }

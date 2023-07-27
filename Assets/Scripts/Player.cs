@@ -213,7 +213,7 @@ public class Player : MonoBehaviour
 
     private void BushCheck(Vector3Int nextPos)
     {
-        bool notInBush = !TileManager.Instance.WorldToCell(nextPos).cellObject.HasFlag(CellObject.Bush);
+        bool notInBush = TileManager.Instance.WorldToCell(nextPos).cellObject != CellObject.Bush;
         playerRenderer.enabled = notInBush;
         displayer.SetActive(notInBush);
         shieldTimer.enabled = notInBush;
@@ -286,10 +286,11 @@ public class Player : MonoBehaviour
     {
         if (TileManager.Instance.TryGetCell(transform.position + (Vector3)direction * 0.55f, out Cell frontCell))
         {
-            if(frontCell.cellObject.HasFlag(CellObject.Balloon) &&
-                !TileManager.Instance.WorldToCell(transform.position).cellObject.HasFlag(CellObject.Balloon))
+            if(frontCell.cellObject == CellObject.Balloon &&
+                TileManager.Instance.WorldToCell(transform.position).cellObject != CellObject.Balloon)
             {
                 playerRb.velocity = Vector2.zero;
+                Debug.Log("cannot move");
             }
 
             self.enabled = false;
@@ -346,6 +347,8 @@ public class Player : MonoBehaviour
                         }
                     }
                 }
+                    
+                
             }
         }
     }
@@ -356,7 +359,7 @@ public class Player : MonoBehaviour
         if (balloonNumber > 0)
         {
             CellObject cellobj = TileManager.Instance.CoordinateToCell(coordinate).cellObject;
-            if(Balloon.CanPlaceBalloon(cellobj))
+            if(cellobj == CellObject.Nothing || cellobj == CellObject.Bush)
             {
                 Balloon balloon = Instantiate(ItemCache.Instance.balloonPrefab, transform.position, Quaternion.identity);
                 balloon.OnBallonExplode += OnBallonExplode;

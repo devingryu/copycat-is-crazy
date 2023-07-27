@@ -121,7 +121,7 @@ Transform:
   - {fileID: 4647772253570121229}
   - {fileID: 2910411178755354970}
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!58 &7190153606172179572
 CircleCollider2D:
@@ -442,14 +442,6 @@ PrefabInstance:
     - target: {fileID: 3866715119782089292, guid: 7d542a9301f94d14795a3189c6ed98d0, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5933432950594436864, guid: 7d542a9301f94d14795a3189c6ed98d0, type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: -2413806693520163455, guid: ebe73ca9363db456bacf42c025bb4847, type: 3}
-    - target: {fileID: 5933432950594436864, guid: 7d542a9301f94d14795a3189c6ed98d0, type: 3}
-      propertyPath: m_WasSpriteAssigned
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

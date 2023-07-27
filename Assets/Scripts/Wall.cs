@@ -11,13 +11,12 @@ public class Wall : MonoBehaviour
         if(isBreakable)
         {
             standingCell = TileManager.Instance.WorldToCell(transform.position);
-            standingCell.cellObject |= CellObject.Wall;
+            standingCell.cellObject = CellObject.Breakable;
             standingCell.OnCellAttacked += BreakableWall_OnCellAttacked;
         }
         else
         {
-            TileManager.Instance.WorldToCell(transform.position).cellObject |= (CellObject.Unbreakable | CellObject.Wall);
-
+            TileManager.Instance.WorldToCell(transform.position).cellObject = CellObject.UnBreakable;
         }
     }
 
@@ -30,6 +29,6 @@ public class Wall : MonoBehaviour
     {
         Destroy(gameObject);
         standingCell.OnCellAttacked -= BreakableWall_OnCellAttacked;
-        standingCell.cellObject &= (~(CellObject.Wall | CellObject.Unbreakable));
+        standingCell.cellObject = CellObject.Nothing;
     }
 }
