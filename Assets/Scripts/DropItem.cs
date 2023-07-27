@@ -8,7 +8,7 @@ public class DropItem : MonoBehaviour
     private void Awake()
     {
         currentCell = TileManager.Instance.WorldToCell(transform.position);
-        currentCell.cellObject = CellObject.Breakable;
+        currentCell.cellObject |= CellObject.DropItem;
         currentCell.OnCellAttacked += DropItem_OnCellAttacked;
     }
 
@@ -19,7 +19,7 @@ public class DropItem : MonoBehaviour
 
     public void Delete()
     {
-        currentCell.cellObject = CellObject.Nothing;
+        currentCell.cellObject &= (~CellObject.DropItem);
         currentCell.OnCellAttacked -= DropItem_OnCellAttacked;
         Destroy(gameObject);
     }

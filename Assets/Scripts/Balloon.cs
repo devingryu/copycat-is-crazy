@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Balloon : MonoBehaviour
@@ -10,6 +12,7 @@ public class Balloon : MonoBehaviour
     bool isBoomed = false;
     Vector3Int position;
     SpriteRenderer spriteRenderer;
+    Cell currentCell;
 
     private void Awake()
     {
@@ -20,17 +23,15 @@ public class Balloon : MonoBehaviour
     private void Start()
     {
         position = TileManager.Instance.WorldToCoordinate(transform.position);
-        Cell currentCell = TileManager.Instance.CoordinateToCell(position);
+        currentCell = TileManager.Instance.CoordinateToCell(position);
         transform.position = currentCell.worldPos;
 
-        if(currentCell.cellObject == CellObject.Bush)
+        if(currentCell.cellObject.HasFlag(CellObject.Bush))
         {
             spriteRenderer.enabled = false;
         }
-        else
-        {
-            currentCell.cellObject = CellObject.Balloon;
-        }
+
+        currentCell.cellObject |= CellObject.Balloon;
 
         currentCell.OnCellAttacked += Balloon_OnCellAttacked;
     }
@@ -39,7 +40,6 @@ public class Balloon : MonoBehaviour
     {
         spriteRenderer.enabled = true;
         Explode();
-        TileManager.Instance.CoordinateToCell(position).OnCellAttacked -= Balloon_OnCellAttacked;
     }
 
     private void Update()
@@ -49,19 +49,22 @@ public class Balloon : MonoBehaviour
         {
             Explode();
         }
+
+        SpikeCheck();
     }
 
     public void Explode()
     {
         if (isBoomed)
             return;
-
+        TileManager.Instance.CoordinateToCell(position).OnCellAttacked -= Balloon_OnCellAttacked;
         isBoomed = true;
         OnBallonExplode?.Invoke(this, EventArgs.Empty);
-        TileManager.Instance.CoordinateToCell(position).cellObject = CellObject.Nothing;
+        TileManager.Instance.CoordinateToCell(position).cellObject &= (~CellObject.Balloon);
 
         AttackValidCell();
         GameManager.Instance.PlaySound(GameManager.SFXName.Explode);
+        Debug.Log("Explode");
         Destroy(gameObject);
     }
 
@@ -71,7 +74,11 @@ public class Balloon : MonoBehaviour
         for (up = 0; up <= range; ++up)
         {
             if (TileManager.Instance.TryGetCell(position + Vector3Int.up * up, out Cell upCell) && IsAttackable(upCell.cellObject))
+            {
+                bool isWall = upCell.cellObject.HasFlag(CellObject.Wall);
                 upCell.Attack();
+                if (isWall) break;
+            }
             else
                 break;
         }
@@ -79,7 +86,11 @@ public class Balloon : MonoBehaviour
         for (down = 1; down <= range; ++down)
         {
             if (TileManager.Instance.TryGetCell(position + Vector3Int.down * down, out Cell downCell) && IsAttackable(downCell.cellObject))
+            {
+                bool isWall = downCell.cellObject.HasFlag(CellObject.Wall);
                 downCell.Attack();
+                if (isWall) break;
+            }
             else
                 break;
         }
@@ -87,16 +98,24 @@ public class Balloon : MonoBehaviour
         for (left = 1; left <= range; ++left)
         {
             if (TileManager.Instance.TryGetCell(position + Vector3Int.left * left, out Cell leftCell) && IsAttackable(leftCell.cellObject))
-                    leftCell.Attack();
+            {
+                bool isWall = leftCell.cellObject.HasFlag(CellObject.Wall);
+                leftCell.Attack();
+                if (isWall) break;
+            }
+
             else
                 break;
         }
 
         for (right = 1; right <= range; ++right)
         {
-            if (TileManager.Instance.TryGetCell(position + Vector3Int.right * right, out Cell rightCell)
-                && IsAttackable(rightCell.cellObject))
+            if (TileManager.Instance.TryGetCell(position + Vector3Int.right * right, out Cell rightCell) && IsAttackable(rightCell.cellObject))
+            {
+                bool isWall = rightCell.cellObject.HasFlag(CellObject.Wall);
                 rightCell.Attack();
+                if (isWall) break;
+            }
             else
                 break;
         }
@@ -104,6 +123,21 @@ public class Balloon : MonoBehaviour
 
     private bool IsAttackable(CellObject obj)
     {
-        return obj != CellObject.UnBreakable;
+        return !obj.HasFlag(CellObject.Unbreakable);
+    }
+
+    public static bool CanPlaceBalloon(CellObject cellObject)
+    {
+        // filter : except spike and bush
+        CellObject filter = ~(CellObject.Spike | CellObject.Bush);
+        return (cellObject & filter) == 0;
+    }
+
+    void SpikeCheck()
+    {
+        if (currentCell.cellObject.HasFlag(CellObject.Spike) && currentCell.spike.IsOn())
+        {
+            Explode();
+        }
     }
 }

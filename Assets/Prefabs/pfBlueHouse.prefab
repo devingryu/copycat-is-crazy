@@ -12,6 +12,10 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: -709021682, guid: fedafbbf814aa4a46bf7c2cb1010682e, type: 3}
+    - target: {fileID: 3755551770359801113, guid: d033a931abf1046458dc877e54e8dde4, type: 3}
+      propertyPath: isBreakable
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3979785452076435763, guid: d033a931abf1046458dc877e54e8dde4, type: 3}
       propertyPath: m_Name
       value: pfBlueHouse
