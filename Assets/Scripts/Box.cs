@@ -25,7 +25,7 @@ public class Box : MonoBehaviour
     {
         position = TileManager.Instance.WorldToCoordinate(transform.position);
         Cell standingCell = TileManager.Instance.WorldToCell(transform.position);
-        standingCell.cellObject = CellObject.Breakable;
+        standingCell.cellObject |= CellObject.Box;
         standingCell.OnCellAttacked += Box_OnCellAttacked;
     }
     public void Push(Vector3Int direction)
@@ -41,7 +41,7 @@ public class Box : MonoBehaviour
                 prevCell.OnCellAttacked -= Box_OnCellAttacked;
 
                 movingCell.OnCellAttacked += Box_OnCellAttacked;
-                movingCell.cellObject = CellObject.Breakable;
+                movingCell.cellObject |= CellObject.Box;
                 Position += direction;
                 isMoving = true;
             }
@@ -70,7 +70,7 @@ public class Box : MonoBehaviour
     {
         Destroy(gameObject);
         Cell currentCell = TileManager.Instance.CoordinateToCell(position);
-        currentCell.cellObject = CellObject.Nothing;
+        currentCell.cellObject &= (~CellObject.Box);
         currentCell.OnCellAttacked -= Box_OnCellAttacked;
         if (Random.value < itemDropPercentage && GameManager.battleCount != 3)
             ItemCache.Instance.SpawnRandomDropItem(transform.position);
