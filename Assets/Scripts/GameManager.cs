@@ -66,9 +66,7 @@ public class GameManager : MonoBehaviour
     public void StartGame()
     { 
         System.GC.Collect();
-        //battleCount = Random.Range(0, battleMapNumber) + 1;  // 1 ~ map number
-
-        battleCount = 4;
+        battleCount = Random.Range(0, battleMapNumber) + 1;  // 1 ~ map number
 
         if(battleCount==1||battleCount==2)
         {
