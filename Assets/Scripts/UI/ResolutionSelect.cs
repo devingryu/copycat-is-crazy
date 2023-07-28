@@ -20,6 +20,7 @@ public class ResolutionSelect : MonoBehaviour
         foreach(var resolution in resolutions)
         {
             OptionData resolutionOptionData = new OptionData() { text = resolution.ToString() };
+            if (resolution.width <= 800) continue;
             selectDropDown.options.Add(resolutionOptionData);
 
             if(Screen.width == resolution.width && Screen.height == resolution.height)
@@ -45,7 +46,6 @@ public class ResolutionSelect : MonoBehaviour
 
     void ChangeResolution()
     {
-        Debug.Log("Changed Resolution");
         Screen.SetResolution(resolutions[selectDropDown.value].width, resolutions[selectDropDown.value].height, true);
     }
 }
