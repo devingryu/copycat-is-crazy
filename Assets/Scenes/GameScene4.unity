@@ -4280,8 +4280,6 @@ MonoBehaviour:
   Fadein: {fileID: 1943449682}
   timerObject: {fileID: 0}
   Kill: 0000000000000000
-  P1Kill: {fileID: 1450802171}
-  P2Kill: {fileID: 775305580}
   exitPopup: {fileID: 0}
   sfxClips: []
 --- !u!4 &1565094546
@@ -4929,7 +4927,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1943449681
 RectTransform:
   m_ObjectHideFlags: 0

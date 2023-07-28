@@ -10,7 +10,6 @@ public class GameManager : MonoBehaviour
     int battleMapNumber = 0;
     public static int battleCount = 0;
     public FadeIn Fadein;
-    public GameObject timerObject;
 
     public int[] Kill = new int[2];
 
@@ -32,6 +31,7 @@ public class GameManager : MonoBehaviour
                 Destroy(gameObject);
             }
         }
+       
         battleMapNumber = SceneManager.sceneCountInBuildSettings - 3;
 
         Fadein?.FadeIN();
@@ -66,7 +66,9 @@ public class GameManager : MonoBehaviour
     public void StartGame()
     { 
         System.GC.Collect();
-        battleCount = Random.Range(0, battleMapNumber) + 1;  // 1 ~ map number
+        //battleCount = Random.Range(0, battleMapNumber) + 1;  // 1 ~ map number
+
+        battleCount = 4;
 
         if(battleCount==1||battleCount==2)
         {
@@ -80,16 +82,6 @@ public class GameManager : MonoBehaviour
         }
 
         SceneManager.LoadScene("GameScene" + battleCount);
-
-        if(battleCount == 4) //е╦юс╬Нец ╦й
-        {
-            ActivateTimer();
-        }
-        
-    }
-    void ActivateTimer()
-    {
-        timerObject.GetComponent<Timer>().enabled = true;
     }
 
     public void FirKillUpdate()
