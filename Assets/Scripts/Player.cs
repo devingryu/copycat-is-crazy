@@ -53,7 +53,7 @@ public class Player : MonoBehaviour
             OnDamage?.Invoke(this, EventArgs.Empty);
             IsTrapped = false;
 
-            if(GameManager.battleCount != 4) //타임어택 맵 제외
+            if(GameManager.Instance.battleCount != 4) //타임어택 맵 제외
             {
             
                 if(healthAmount <= 0)
@@ -177,17 +177,17 @@ public class Player : MonoBehaviour
 
         if(Input.GetKeyDown(placeBalloon))
             PlaceBalloon();
-        if (Input.GetKeyDown(item1) && GameManager.battleCount != 3)
+        if (Input.GetKeyDown(item1) && GameManager.Instance.battleCount != 3)
         {
             usableItemInventory[0].Use(this);
             OnItemUse?.Invoke(this, new OnItemUseEventArgs { itemType = usableItemInventory[0] });
         }
-        if (Input.GetKeyDown(item2) && GameManager.battleCount != 3)
+        if (Input.GetKeyDown(item2) && GameManager.Instance.battleCount != 3)
         {
             usableItemInventory[1].Use(this);
             OnItemUse?.Invoke(this, new OnItemUseEventArgs { itemType = usableItemInventory[1] });
         }
-        if (Input.GetKeyDown(item3) && GameManager.battleCount != 3)
+        if (Input.GetKeyDown(item3) && GameManager.Instance.battleCount != 3)
         {
             usableItemInventory[2].Use(this);
             OnItemUse?.Invoke(this, new OnItemUseEventArgs { itemType = usableItemInventory[2] });
@@ -329,7 +329,7 @@ public class Player : MonoBehaviour
                 if (otherPlayer.IsTrapped)
                 {
                     otherPlayer.Health--;
-                    if(GameManager.battleCount == 4) { 
+                    if(GameManager.Instance.battleCount == 4) { 
                         if (isFirstPlayer)
                         {
                             GameManager.Instance.FirKillUpdate();
@@ -373,7 +373,7 @@ public class Player : MonoBehaviour
             if(timer < 0)
             {
                 Health--;
-                if (GameManager.battleCount == 4)
+                if (GameManager.Instance.battleCount == 4)
                 {
                     if (isFirstPlayer)
                     {
@@ -491,7 +491,6 @@ public class Player : MonoBehaviour
         WaitForSeconds blinkTime = new WaitForSeconds(0.2f);
         while(timer >= 0)
         {
-            Debug.Log(timer);
             timer -= 0.4f;
             playerRenderer.color = Color.clear;
             yield return blinkTime;

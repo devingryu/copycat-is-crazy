@@ -17,6 +17,5 @@ public class Needle : UsableItem
     protected override void Effect(Player player)
     {
         player.IsTrapped = false;
-        Debug.Log(player.gameObject.name + " is Using Needle");
     }
 }

@@ -16,7 +16,6 @@ public class Shield : UsableItem
 
     protected override void Effect(Player player)
     {
-        Debug.Log(player.gameObject.name + " is using Shield!");
         player.IsShield = true;
     }
 }

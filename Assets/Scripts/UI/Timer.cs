@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -6,9 +7,11 @@ using UnityEngine.UI;
 
 public class Timer : MonoBehaviour
 {
+    [SerializeField] AudioClip clip;
     public float totalTime = 120.0f; // 타이머가 시작부터 종료까지의 총 시간 (초)
     private float currentTime; // 현재 시간 (초)
     private TMP_Text timerText; // TMP_Text 컴포넌트
+    bool isSpurt = false;
 
     void Start()
     {
@@ -24,6 +27,11 @@ public class Timer : MonoBehaviour
         {
             currentTime -= Time.deltaTime;
 
+            if(Input.GetKeyDown(KeyCode.T))
+            {
+                currentTime -= 10;
+            }
+
             // 타이머가 종료되었을 때 처리
             if (currentTime <= 0)
             {
@@ -34,6 +42,17 @@ public class Timer : MonoBehaviour
             }
 
             UpdateTimerText(); // UI Text 업데이트
+
+            if (!isSpurt && currentTime <= 30)
+            {
+                isSpurt = true;
+                AudioSource source = Camera.main.GetComponent<AudioSource>();
+                source.Stop();
+                source.clip = clip;
+                source.Play();
+                Debug.Log(source.isPlaying);
+            }
+
         }
     }
 

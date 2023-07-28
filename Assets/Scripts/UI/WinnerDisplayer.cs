@@ -10,7 +10,7 @@ public class WinnerDisplayer : MonoBehaviour
 
     private void Start()
     {
-        if (GameManager.battleCount != 4)
+        if (GameManager.Instance.battleCount != 4)
         {
             if (Player.FirstPlayerDefeat && Player.SecondPlayerDefeat)
                 GameManager.Instance.SetWinner(3);

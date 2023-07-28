@@ -5,27 +5,27 @@ using UnityEngine.UI;
 
 public class FadeOut : MonoBehaviour
 {
-    public Image Panel;
+    [SerializeField] Image panel;
     float time = 0f;
     float F_time = 0.3f;
 
     public void FadeOUT()
     {
+        if (panel == null) return;
+        panel.enabled = true;
+        panel.color = new Color(panel.color.r, panel.color.g, panel.color.b, 0);
         StartCoroutine(Fadeout());
     }
     IEnumerator Fadeout()
     {
-        Panel.gameObject.SetActive(true);
         time = 0f;
-        Color alpha = Panel.color;
+        Color alpha = panel.color;
         while (alpha.a < 1f)
         {
             time += Time.deltaTime / F_time;
             alpha.a = Mathf.Lerp(0, 1, time);
-            Panel.color = alpha;
+            panel.color = alpha;
             yield return null;
         }
-
-        yield return null;
     }
 }

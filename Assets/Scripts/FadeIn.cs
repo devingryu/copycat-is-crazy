@@ -5,29 +5,33 @@ using UnityEngine.UI;
 
 public class FadeIn : MonoBehaviour
 {
-    public Image Panel;
+    [SerializeField] Image panel;
     float time = 0f;
     float F_time = 1f;
 
+    private void Awake()
+    {
+        panel.enabled = false;
+    }
+
     public void FadeIN()
     {
+        if (panel == null) return;
+        panel.enabled = true;
         StartCoroutine(Fadein());
     }
     IEnumerator Fadein()
     {
         yield return new WaitForSeconds(0.2f);
-
-        Panel.gameObject.SetActive(true);
         time = 0f;
-        Color alpha = Panel.color;
+        Color alpha = panel.color;
         while(alpha.a > 0f)
         {
             time += Time.deltaTime / F_time;
             alpha.a = Mathf.Lerp(1, 0, time);
-            Panel.color = alpha;
+            panel.color = alpha;
             yield return null;
         }
-        Panel.gameObject.SetActive(false);
-        yield return null;
+        panel.enabled = false;
     }
 }

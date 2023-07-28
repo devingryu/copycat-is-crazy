@@ -64,7 +64,6 @@ public class Balloon : MonoBehaviour
 
         AttackValidCell();
         GameManager.Instance.PlaySound(GameManager.SFXName.Explode);
-        Debug.Log("Explode");
         Destroy(gameObject);
     }
 

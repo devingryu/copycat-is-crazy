@@ -2,20 +2,32 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class StartButton : MonoBehaviour
 {
-    FadeOut FadeOut;
+    [SerializeField] int mapNumber = 0;
 
-    public void StartBtn()
+
+    private void Start()
     {
-        StartCoroutine(DelayedStartGame());
+        GetComponent<Button>().onClick.AddListener(StartBtn);
     }
 
-    IEnumerator DelayedStartGame()
+    void StartBtn()
     {
-        FadeOut?.FadeOUT();
-        yield return new WaitForSeconds(1.0f);
-        GameManager.Instance.StartGame();
+        if(mapNumber == -1)
+        {
+            //-1 : select scene
+            GameManager.Instance.GoToSelectScene();
+            return;
+        }
+
+        GameManager.Instance.StartGame(mapNumber);
+    }
+
+    public void SetMapNumber(int mapNumber)
+    {
+        this.mapNumber  = mapNumber;
     }
 }

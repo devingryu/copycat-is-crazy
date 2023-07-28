@@ -2,16 +2,21 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour
 {
+    public enum GameType { Normal, NoItem, TimeAttack }
+    GameType gameType;
     public static GameManager Instance {  get; private set; }
     int winner = 0; // 1p : 1, 2p : 2 , draw : 3
     int battleMapNumber = 0;
-    public static int battleCount = 0;
-    public FadeIn Fadein;
+    public int battleCount = 0;
+    [SerializeField] FadeIn fadein;
+    [SerializeField] FadeOut fadeOut;
 
-    public int[] Kill = new int[2];
+    public int[] Kill = new int[2] { 0, 0 };
+    public GameType GetGameType() => gameType;
 
     private void Awake()
     {
@@ -32,19 +37,9 @@ public class GameManager : MonoBehaviour
             }
         }
        
-        battleMapNumber = SceneManager.sceneCountInBuildSettings - 3;
-
-        Fadein?.FadeIN();
-        Kill[0] = 0;
-        Kill[1] = 0;
-        
+        battleMapNumber = SceneManager.sceneCountInBuildSettings - 4;
     }
 
-    private void Start()
-    {
-        
-
-    }
 
     #region GameFlow
 
@@ -63,23 +58,47 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene("ResultScene");
     }
 
-    public void StartGame()
+
+    public void StartGame(int mapNumber = 0)
     { 
-        System.GC.Collect();
-        battleCount = Random.Range(0, battleMapNumber) + 1;  // 1 ~ map number
-
-        if(battleCount==1||battleCount==2)
+        //System.GC.Collect();
+        if (mapNumber == 0)
         {
+            battleCount = Random.Range(0, battleMapNumber) + 1;
+        }
+        else
+            battleCount = mapNumber;
 
-        } else if(battleCount==3)
+
+        switch(battleCount)
         {
-
-        } else if(battleCount==4)
-        {
-
+            case 1:
+                gameType = GameType.Normal;
+                break;
+            case 2:
+                gameType = GameType.Normal;
+                break;
+            case 3:
+                gameType = GameType.NoItem;
+                break;
+            case 4:
+                gameType = GameType.TimeAttack;
+                break;
         }
 
+        Kill[0] = 0;
+        Kill[1] = 0;
+        winner = 0;
+        fadeOut.FadeOUT();
         SceneManager.LoadScene("GameScene" + battleCount);
+        fadein.FadeIN();
+    }
+
+    public void GoToSelectScene()
+    {
+        fadeOut.FadeOUT();
+        SceneManager.LoadScene("GameTypeSelectScene");
+        fadein.FadeIN();
     }
 
     public void FirKillUpdate()
@@ -100,8 +119,7 @@ public class GameManager : MonoBehaviour
         {
             if(exitPopup.gameObject.activeSelf)
             {
-                Time.timeScale = 1;
-                exitPopup.gameObject.SetActive(false);
+                TurnOffExitButton();
             }
             else
             {
@@ -110,6 +128,15 @@ public class GameManager : MonoBehaviour
             }
         }
         
+    }
+
+    public void TurnOffExitButton()
+    {
+        if (exitPopup.gameObject.activeSelf)
+        {
+            Time.timeScale = 1;
+            exitPopup.gameObject.SetActive(false);
+        }
     }
 
 
@@ -143,25 +170,32 @@ public class GameManager : MonoBehaviour
 
     public void PlaySound(SFXName name)
     {
+
         switch(name)
         {
             case SFXName.Damaged:
                 sfxChannels[availableSfxChannelIndex].clip = sfxClips[(int)SFXName.Damaged];
+                sfxChannels[availableSfxChannelIndex].volume = 1;
                 break;
             case SFXName.PlaceBalloon:
                 sfxChannels[availableSfxChannelIndex].clip = sfxClips[(int)SFXName.PlaceBalloon];
+                sfxChannels[availableSfxChannelIndex].volume = 1;
                 break;
             case SFXName.CollectItem:
                 sfxChannels[availableSfxChannelIndex].clip = sfxClips[(int)SFXName.CollectItem];
+                sfxChannels[availableSfxChannelIndex].volume = 1;
                 break;
             case SFXName.PushBox:
                 sfxChannels[availableSfxChannelIndex].clip = sfxClips[(int)SFXName.PushBox];
+                sfxChannels[availableSfxChannelIndex].volume = 1;
                 break;
             case SFXName.RideSomething:
                 sfxChannels[availableSfxChannelIndex].clip = sfxClips[(int)SFXName.RideSomething];
+                sfxChannels[availableSfxChannelIndex].volume = 1;
                 break;
             case SFXName.Explode:
                 sfxChannels[availableSfxChannelIndex].clip = sfxClips[(int)SFXName.Explode];
+                sfxChannels[availableSfxChannelIndex].volume = 0.2f;
                 break;
         }
 
